@@ -1,3 +1,3 @@
-# RWA (aka Newer Awesomer Class Action, Inc. Website)
+# Project Bear Cave (aka Newer Awesomer Class Action, Inc. Website)
 
 more to come...
