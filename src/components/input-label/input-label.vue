@@ -1,6 +1,6 @@
 <template>
   <div class="input-label">
-    <input :class="inputClass" :type="inputType" :value="value" ref="input">
+    <input :class="inputClass" :type="inputType" :value="value" ref="input" @input="onInput">
     <label>{{getLabel}}</label>
   </div>
 </template>

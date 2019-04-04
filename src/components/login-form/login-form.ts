@@ -1,6 +1,7 @@
 import { Component, Vue } from 'vue-property-decorator'
 import state from '@/services/state'
 import InputLabel from '../input-label/input-label.vue'
+import requests from '@/services/requests';
 
 @Component({
     components: {
@@ -44,6 +45,31 @@ export default class LoginForm extends Vue {
         }
 
         return classes
+    }
+
+    public loginRegister() {
+        switch (this.state.login) {
+            case `login`:
+                requests.post(`/user/login`, {
+                    email: this.register.email,
+                    password: this.register.password
+                })
+                break
+
+            case `register`:
+                requests.post(`/user`, {
+                    fname: this.register.firstName,
+                    lname: this.register.lastName,
+                    email_current: this.register.email,
+                    email_original: this.register.email,
+                    password: this.register.password
+                })
+                break
+        }
+    }
+
+    public formUpdate(e: any) {
+        (this.register as any)[e.name] = e.value
     }
 
     public mounted() {

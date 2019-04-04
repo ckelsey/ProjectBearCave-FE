@@ -50,12 +50,13 @@ h1 {
 #app {
   width: 100vw;
   height: 100vh;
+  min-width: 300px;
   position: relative;
   overflow: hidden;
   background: var(--background-color);
   color: var(--on-light-text-color);
 
-  &.darken{
+  &.darken {
     background: #ccd4dc;
   }
 }

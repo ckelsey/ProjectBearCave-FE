@@ -4,19 +4,62 @@
       <div class="form" :class="formState">
         <h2 id="register-message">Register and stuff</h2>
         <h2 id="login-message">Welcome back</h2>
-        <input-label id="firstNameInput" label="first name" type="text" :value="register.firstName"></input-label>
-        <input-label id="lastNameInput" label="last name" type="text" :value="register.lastName"></input-label>
-        <input-label id="emailInput" label="email" type="email" :value="register.email"></input-label>
-        <input-label id="passwordInput" label="password" type="password" :value="register.password"></input-label>
-        <input-label id="confirmPasswordInput" label="confirm password" type="password" :value="register.password"></input-label>
+        <div class="login-register-inputs">
+          <input-label
+            id="firstNameInput"
+            label="first name"
+            type="text"
+            name="firstName"
+            :value="register.firstName"
+            @onInput="formUpdate"
+          ></input-label>
+          <input-label
+            id="lastNameInput"
+            label="last name"
+            name="lastName"
+            type="text"
+            :value="register.lastName"
+            @onInput="formUpdate"
+          ></input-label>
+        </div>
+        <div class="login-register-inputs">
+          <input-label
+            id="emailInput"
+            name="email"
+            label="email"
+            type="email"
+            :value="register.email"
+            @onInput="formUpdate"
+          ></input-label>
+        </div>
+        <div class="login-register-inputs">
+          <input-label
+            id="passwordInput"
+            label="password"
+            type="password"
+            name="password"
+            :value="register.password"
+            @onInput="formUpdate"
+          ></input-label>
+          <input-label
+            id="confirmPasswordInput"
+            label="confirm password"
+            type="password"
+            name="confirmPassword"
+            :value="register.confirmPassword"
+            @onInput="formUpdate"
+          ></input-label>
+        </div>
         <div class="form-bottom">
           <div class="form-bottom-left">
-            <button id="register-button" class="border-orange bold">register</button>
-            <button id="login-button" class="border-orange bold">login</button>
+            <button v-on:click="loginRegister" class="border-orange bold">
+              <span id="register-button">register</span>
+              <span id="login-button">login</span>
+            </button>
           </div>
           <div class="form-bottom-right">
-            <span v-on:click="state.login='login'" id="switch-to-login">Already have an account?</span>
-            <span v-on:click="state.login='register'" id="switch-to-register">Don't have an account?</span>
+            <span v-on:click="state.login='login'" id="switch-to-login">Have an account?</span>
+            <span v-on:click="state.login='register'" id="switch-to-register">Need an account?</span>
           </div>
         </div>
       </div>
@@ -43,18 +86,17 @@
     top: 110vh;
   }
 
-  h2{
+  h2 {
     font-weight: bold;
   }
 
   .register-form {
     width: 100%;
     height: 100%;
-    padding: 40px;
-    max-width: 80%;
+    padding: 120px 20px 40px;
     margin: auto;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
 
     .input-label {
@@ -63,9 +105,29 @@
     }
   }
 
+  .login-register-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0px -10px;
+
+    .input-label {
+      min-width: 280px;
+      flex-shrink: 1;
+      width: auto;
+      margin: 10px 10px 25px;
+      flex-grow: 1;
+      box-sizing: border-box;
+    }
+  }
+
   .form {
     width: 100%;
     max-width: 600px;
+
+    #switch-to-register,
+    #switch-to-login {
+      cursor: pointer;
+    }
 
     &.register {
       #login-message,
@@ -107,11 +169,10 @@
     align-items: self;
     justify-content: space-between;
 
-    // .form-bottom-left {
-    // }
-
-    // .form-bottom-left {
-    // }
+    .form-bottom-right {
+      display: flex;
+      align-items: center;
+    }
   }
 }
 </style>
