@@ -4,11 +4,11 @@
       <div class="form" :class="formState">
         <h2 id="register-message">Register and stuff</h2>
         <h2 id="login-message">Welcome back</h2>
-        <input-label label="first name" type="text" :value="register.firstName"></input-label>
-        <input-label label="last name" type="text" :value="register.lastName"></input-label>
-        <input-label label="email" type="email" :value="register.email"></input-label>
-        <input-label label="password" type="password" :value="register.password"></input-label>
-        <input-label label="confirm password" type="password" :value="register.password"></input-label>
+        <input-label id="firstNameInput" label="first name" type="text" :value="register.firstName"></input-label>
+        <input-label id="lastNameInput" label="last name" type="text" :value="register.lastName"></input-label>
+        <input-label id="emailInput" label="email" type="email" :value="register.email"></input-label>
+        <input-label id="passwordInput" label="password" type="password" :value="register.password"></input-label>
+        <input-label id="confirmPasswordInput" label="confirm password" type="password" :value="register.password"></input-label>
         <div class="form-bottom">
           <div class="form-bottom-left">
             <button id="register-button" class="border-orange bold">register</button>
@@ -74,9 +74,9 @@
         display: none;
       }
 
-      [label="confirm-password"],
-      [label="first name"],
-      [label="last name"],
+      #confirmPasswordInput,
+      #firstNameInput,
+      #lastNameInput,
       #register-message,
       #register-button,
       #switch-to-login {
@@ -91,9 +91,9 @@
         display: block;
       }
 
-      [label="confirm-password"],
-      [label="first name"],
-      [label="last name"],
+      #confirmPasswordInput,
+      #firstNameInput,
+      #lastNameInput,
       #register-message,
       #register-button,
       #switch-to-login {
