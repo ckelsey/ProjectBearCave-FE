@@ -19,6 +19,13 @@ export default class LoginForm extends Vue {
         confirmPassword: ``
     }
 
+    public get formState() {
+        if (this.state.login === `login`) {
+            return `login`
+        }
+        return `register`
+    }
+
     public get classes() {
         let classes = `login-form`
 
