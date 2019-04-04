@@ -1,4 +1,29 @@
-# Project Bear Cave - Front End Dev 
-(aka Newer Awesomer Class Action, Inc. Website)
+# Class Action Inc Frontend
 
-more to come...
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Run your tests
+```
+npm run test
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).

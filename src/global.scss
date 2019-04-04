@@ -1,0 +1,14 @@
+html {
+    height: 100%;
+}
+
+body {
+    min-height: 100%;
+    margin: 0px;
+    font-family: "Roboto", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    --overlay-color: rgba(75, 152, 189, 0.13);
+    --primary-color: rgb(60, 155, 201);
+    --secondary-color: rgb(81, 91, 101);
+}
