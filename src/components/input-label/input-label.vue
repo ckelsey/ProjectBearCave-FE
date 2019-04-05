@@ -28,7 +28,7 @@
 
   input {
     width: 100%;
-    background: #fff;
+    background: transparent;
     color: inherit;
     border: none;
     font: inherit;
@@ -37,6 +37,7 @@
     box-shadow: inset 0px 0px 0px 1px rgba(255, 255, 255, 0.3);
     cursor: text;
     outline: none !important;
+    border-bottom: 1px solid rgba(36, 39, 77, 0.35);
     transition: all 0.2s;
 
     &:focus + label,
