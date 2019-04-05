@@ -27,12 +27,12 @@ body {
   --primary-color: #2c9bc9;
   --secondary-color: rgb(81, 91, 101);
   --on-dark-text-color: #fff;
-  --on-light-text-color: #4e5b5f;
-  --background-color: #e8ecec;
-  --orange: #f28d4e;
-  --blue: #53c6dc;
-  --green: #56c4b3;
-  --dark-blue: #424c58;
+  --on-light-text-color: #2a658b;
+  --background-color: #fff;
+  --orange: #f9bb2d;
+  --blue: #39d0ff;
+  --green: #39d0ff;
+  --dark-blue: #25274d;
 }
 
 * {
@@ -55,10 +55,6 @@ h1 {
   overflow: hidden;
   background: var(--background-color);
   color: var(--on-light-text-color);
-
-  &.darken {
-    background: #ccd4dc;
-  }
 }
 
 .bg-green {

@@ -61,7 +61,6 @@ export default class LoginForm extends Vue {
                     fname: this.register.firstName,
                     lname: this.register.lastName,
                     email_current: this.register.email,
-                    email_original: this.register.email,
                     password: this.register.password
                 })
                 break
