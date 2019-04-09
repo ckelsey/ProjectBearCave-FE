@@ -1,8 +1,8 @@
 <template>
   <nav class="nav-bar">
-    <company-menu></company-menu>
-    <brand-element></brand-element>
-    <account-menu></account-menu>
+    <company-menu ref="menu"></company-menu>
+    <brand-element ref="brand"></brand-element>
+    <account-menu ref="account"></account-menu>
   </nav>
 </template>
 

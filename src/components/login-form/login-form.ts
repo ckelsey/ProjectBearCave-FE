@@ -70,8 +70,4 @@ export default class LoginForm extends Vue {
     public formUpdate(e: any) {
         (this.register as any)[e.name] = e.value
     }
-
-    public mounted() {
-        console.log(`sdfas`)
-    }
 }

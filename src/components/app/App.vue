@@ -5,6 +5,9 @@
     <!-- <login-signup></login-signup> -->
     <!-- <div class="overlay"></div> -->
     <login-form></login-form>
+    <about-us></about-us>
+    <contact-section></contact-section>
+    <support-section></support-section>
   </div>
 </template>
 
@@ -42,9 +45,36 @@ body {
   backface-visibility: hidden;
 }
 
+a.primary{
+    color: #39d0ff;
+}
+
 h1 {
   font-size: 192%;
   font-weight: 900;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  &.heading {
+    margin-top: 0px;
+  }
+
+  button {
+    font-size: initial;
+  }
+}
+
+h2 {
+  font-weight: bold;
+}
+
+h4 {
+  font-size: 150%;
+  font-weight: 100;
+
+  &.heading {
+    margin-bottom: 0px;
+  }
 }
 
 #app {
@@ -226,5 +256,9 @@ button {
   left: 0px;
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAAECAYAAACp8Z5+AAAAG0lEQVQYV2NkYGD4z8DAwMgABXAGNgGwSgwVAFbmAgXQdISfAAAAAElFTkSuQmCC);
   opacity: 0.15;
+}
+.form {
+  width: 100%;
+  max-width: 600px;
 }
 </style>

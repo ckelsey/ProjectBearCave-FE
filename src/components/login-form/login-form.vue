@@ -86,10 +86,6 @@
     top: 110vh;
   }
 
-  h2 {
-    font-weight: bold;
-  }
-
   .register-form {
     width: 100%;
     height: 100%;
@@ -121,9 +117,6 @@
   }
 
   .form {
-    width: 100%;
-    max-width: 600px;
-
     #switch-to-register,
     #switch-to-login {
       cursor: pointer;

@@ -4,10 +4,6 @@ class Requests {
         return `https://apidev.classactioninc.com`
     }
 
-    constructor() {
-        this.get(`/user/1`)
-    }
-
     public post(path: string, data: any) {
         let Data
 

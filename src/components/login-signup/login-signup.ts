@@ -7,7 +7,5 @@ import InputLabel from '../input-label/input-label.vue'
     }
 })
 export default class LoginSignup extends Vue {
-    public mounted() {
-        console.log('login')
-    }
+
 }

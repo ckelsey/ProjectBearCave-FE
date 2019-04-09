@@ -12,6 +12,16 @@ import AccountMenu from '../account-menu/account-menu'
 })
 export default class NavBar extends Vue {
     public mounted() {
-        console.log('navbar')
+        const menu = this.$refs.menu as any
+        const account = this.$refs.account as any
+        const brand = this.$refs.brand as any
+        const closeMenu = () => {
+            const openMenu = this.$el.querySelector(`.company-menu.toggled`)
+
+            if (openMenu) { menu.$refs.button.click() }
+        }
+
+        account.$el.addEventListener(`click`, closeMenu)
+        brand.$el.addEventListener(`click`, closeMenu)
     }
 }

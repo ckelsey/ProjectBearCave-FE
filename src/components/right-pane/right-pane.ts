@@ -39,8 +39,4 @@ export default class LeftPane extends Vue {
             hero.classList.toggle(`shift-left`)
         }
     }
-
-    public mounted() {
-        console.log('LeftPane')
-    }
 }
