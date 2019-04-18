@@ -1,5 +1,22 @@
 # Class Action Inc Frontend
 
+## TODO
+
+- error service to api
+- ticket form validation
+- map on about us
+- faq's
+- footer
+- translation service
+
+- build out
+    - profile
+        - address
+        - email
+        - phone
+        - vehicle
+        - employment
+
 ## Project setup
 ```
 npm install
@@ -25,5 +42,3 @@ npm run test
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).

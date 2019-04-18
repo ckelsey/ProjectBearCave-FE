@@ -1,171 +1,244 @@
 <template>
-  <div :class="classes">
-    <div :class="registerClasses">
-      <div class="form" :class="formState">
-        <h2 id="register-message">Register and stuff</h2>
-        <h2 id="login-message">Welcome back</h2>
-        <div class="login-register-inputs">
-          <input-label
-            id="firstNameInput"
-            label="first name"
-            type="text"
-            name="firstName"
-            :value="register.firstName"
-            @onInput="formUpdate"
-          ></input-label>
-          <input-label
-            id="lastNameInput"
-            label="last name"
-            name="lastName"
-            type="text"
-            :value="register.lastName"
-            @onInput="formUpdate"
-          ></input-label>
-        </div>
-        <div class="login-register-inputs">
-          <input-label
-            id="emailInput"
-            name="email"
-            label="email"
-            type="email"
-            :value="register.email"
-            @onInput="formUpdate"
-          ></input-label>
-        </div>
-        <div class="login-register-inputs">
-          <input-label
-            id="passwordInput"
-            label="password"
-            type="password"
-            name="password"
-            :value="register.password"
-            @onInput="formUpdate"
-          ></input-label>
-          <input-label
-            id="confirmPasswordInput"
-            label="confirm password"
-            type="password"
-            name="confirmPassword"
-            :value="register.confirmPassword"
-            @onInput="formUpdate"
-          ></input-label>
-        </div>
-        <div class="form-bottom">
-          <div class="form-bottom-left">
-            <button v-on:click="loginRegister" class="border-orange bold">
-              <span id="register-button">register</span>
-              <span id="login-button">login</span>
-            </button>
-          </div>
-          <div class="form-bottom-right">
-            <span v-on:click="state.login='login'" id="switch-to-login">Have an account?</span>
-            <span v-on:click="state.login='register'" id="switch-to-register">Need an account?</span>
-          </div>
-        </div>
-      </div>
+    <div class="content-section">
+        <section class="content-section-inner">
+            <div class="login-register-form">
+                <form
+                    :class="state.state === `login` ? `show-login`: `show-register`"
+                    ref="form"
+                >
+                    <div
+                        class="login-form"
+                        ref="loginForm"
+                    >
+                        <div class="form-inner">
+                            <h2 id="login-message">Welcome back</h2>
+                            <div
+                                v-for="field in formData"
+                                v-bind:key="field.name"
+                                :id="`field-${field.name}`"
+                            >
+
+                                <div
+                                    class="form-group label-inside"
+                                    v-if="!field.register"
+                                    :class="{'is-invalid':!field.validation.valid}"
+                                >
+
+                                    <input
+                                        class="form-control"
+                                        :type="field.inputType"
+                                        :name="field.name"
+                                        :id="field.name"
+                                        :ref="field.name"
+                                        :autocomplete="field.name.indexOf(`email`) > -1 ? `email` : field.name.toLowerCase().indexOf(`password`) > -1 ? `password` : field.name === `fname` ? `first name`:`last name`"
+                                        v-model="field.value"
+                                        @input="formInput(field)"
+                                        @focus="checkInputState()"
+                                        @blur="checkInputState()"
+                                        @keyup.enter="loginRegister"
+                                    >
+
+                                    <label :for="field.name">
+                                        <font-awesome-icon :icon="field.name.indexOf(`email`) > -1? `at` : field.name.toLowerCase().indexOf(`password`) > -1? `key`:`user-circle`"></font-awesome-icon>{{field.label}} <span class="label-error">{{field.validation.reason.join(`, `)}}</span>
+                                    </label>
+
+                                </div>
+                            </div>
+                            <div class="form-group-bottom d-flex align-items-center justify-content-between">
+
+                                <button
+                                    class="btn btn-secondary"
+                                    ref="submit"
+                                    @click="loginRegister"
+                                    type="button"
+                                >Login</button>
+
+                                <div class="form-bottom-right">
+                                    <span
+                                        @click="switchForm(`register`)"
+                                        class="btn btn-link form-collapse"
+                                    >Need an account?</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="register-form"
+                        ref="registerForm"
+                    >
+
+                        <div class="form-inner">
+                            <h2 id="register-message">Register and stuff</h2>
+
+                            <div
+                                v-for="field in formData"
+                                v-bind:key="field.name"
+                                :id="`field-${field.name}`"
+                            >
+                                <div
+                                    class="form-group label-inside"
+                                    :class="{'is-invalid':!field.validation.valid}"
+                                >
+
+                                    <input
+                                        class="form-control"
+                                        :type="field.inputType"
+                                        :name="field.name"
+                                        :id="field.name"
+                                        :ref="field.name"
+                                        :autocomplete="field.name.indexOf(`email`) > -1 ? `email` : field.name.toLowerCase().indexOf(`password`) > -1 ? `password` : field.name === `fname` ? `first name`:`last name`"
+                                        v-model="field.value"
+                                        @input="formInput(field)"
+                                        @focus="checkInputState()"
+                                        @blur="checkInputState()"
+                                        @keyup.enter="loginRegister"
+                                    >
+
+                                    <label :for="field.name">
+                                        <font-awesome-icon :icon="field.name.indexOf(`email`) > -1? `at` : field.name.toLowerCase().indexOf(`password`) > -1? `key`:`user-circle`"></font-awesome-icon>{{field.label}}<span class="label-error">{{field.validation.reason.join(`, `)}}</span>
+                                    </label>
+
+                                </div>
+                            </div>
+                            <div class="form-group-bottom">
+                                <div class="form-group">
+
+                                    <input
+                                        class="form-control"
+                                        type="checkbox"
+                                        name="agentConsent"
+                                        id="agentConsent"
+                                        v-model="consent.agent.value"
+                                    >
+                                    <label for="agentConsent">
+                                        <span>
+                                            <span class="checkbox-label">Allow Class Action Inc to be your agent<span class="label-error">{{consent.agent.error}}</span></span>
+                                            <span class="checkbox-message">
+                                                An 'agent' is someone who works on your behalf.
+                                                In this context, it lets me file your claims,
+                                                and keep an eye on any court activity that might affect you.
+                                            </span>
+                                        </span>
+                                    </label>
+
+                                </div>
+                                <div class="form-group">
+
+                                    <input
+                                        class="form-control"
+                                        type="checkbox"
+                                        name="assigneeConsent"
+                                        id="assigneeConsent"
+                                        v-model="consent.assignee.value"
+                                    >
+                                    <label for="assigneeConsent">
+                                        <span>
+                                            <span class="checkbox-label">Allow Class Action Inc to be your assignee<span class="label-error">{{consent.assignee.error}}</span></span>
+                                            <span class="checkbox-message">
+                                                An 'assignee' is someone you designate to receive something.
+                                                In this case, it gives my creators the legal right to
+                                                collect payments for you.
+                                            </span>
+                                        </span>
+                                    </label>
+
+                                </div>
+                            </div>
+                            <input
+                                class="enigma"
+                                type="checkbox"
+                                name="enigma"
+                                id="enigma"
+                                v-model="enigma"
+                            >
+                            <div class="form-group-bottom d-flex align-items-center justify-content-between">
+                                <button
+                                    class="btn btn-secondary"
+                                    ref="submit"
+                                    @click="loginRegister"
+                                    type="button"
+                                >Register</button>
+
+                                <div class="form-bottom-right">
+                                    <span
+                                        @click="switchForm(`login`)"
+                                        class="btn btn-link form-collapse"
+                                    >Have an account?</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
     </div>
-  </div>
 </template>
 
 <script lang="ts" src="./login-form.ts"></script>
 
 <style lang="scss">
-.login-form {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 100%;
-  opacity: 1;
-  filter: blur(0px);
-  transition: all 0.6s ease-in-out;
-
-  &.out {
-    filter: blur(14px);
-    opacity: 0;
-    top: 110vh;
-  }
-
-  .register-form {
-    width: 100%;
-    height: 100%;
-    padding: 120px 20px 40px;
+@import "../../global.scss";
+.login-register-form {
+    max-width: 500px;
     margin: auto;
+    padding: 3rem 0rem 1rem;
     display: flex;
     align-items: flex-start;
     justify-content: center;
 
-    .input-label {
-      display: block;
-      margin: 21px 0px 35px;
-    }
-  }
-
-  .login-register-inputs {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 0px -10px;
-
-    .input-label {
-      min-width: 280px;
-      flex-shrink: 1;
-      width: auto;
-      margin: 10px 10px 25px;
-      flex-grow: 1;
-      box-sizing: border-box;
-    }
-  }
-
-  .form {
-    #switch-to-register,
-    #switch-to-login {
-      cursor: pointer;
+    .login-form {
+        opacity: 1;
+        height: 0%;
+        overflow: hidden;
+        max-height: 0px;
+        transform: rotate3d(0, 1, 0, 0deg);
+        transition: opacity 0.2s, transform 0.2s;
     }
 
-    &.register {
-      #login-message,
-      #login-button,
-      #switch-to-register {
-        display: none;
-      }
-
-      #confirmPasswordInput,
-      #firstNameInput,
-      #lastNameInput,
-      #register-message,
-      #register-button,
-      #switch-to-login {
-        display: block;
-      }
+    .register-form {
+        opacity: 0;
+        height: 0%;
+        overflow: hidden;
+        max-height: 0px;
+        transform: rotate3d(0, 1, 0, 90deg);
+        transition: opacity 0.2s, transform 0.2s;
     }
 
-    &.login {
-      #login-message,
-      #login-button,
-      #switch-to-register {
-        display: block;
-      }
+    .show-login {
+        .login-form {
+            height: auto;
+            overflow: visible;
+            max-height: unset;
+            opacity: 1;
+            transform: rotate3d(0, 1, 0, 0deg);
+        }
 
-      #confirmPasswordInput,
-      #firstNameInput,
-      #lastNameInput,
-      #register-message,
-      #register-button,
-      #switch-to-login {
-        display: none;
-      }
+        .register-form {
+            height: 0%;
+            overflow: hidden;
+            max-height: 0px;
+            opacity: 0;
+            transform: rotate3d(0, 1, 0, 90deg);
+        }
     }
-  }
 
-  .form-bottom {
-    display: flex;
-    align-items: self;
-    justify-content: space-between;
+    .show-register {
+        .login-form {
+            height: 0%;
+            overflow: hidden;
+            max-height: 0px;
+            opacity: 0;
+            transform: rotate3d(0, 1, 0, 90deg);
+        }
 
-    .form-bottom-right {
-      display: flex;
-      align-items: center;
+        .register-form {
+            height: auto;
+            overflow: visible;
+            max-height: unset;
+            opacity: 1;
+            transform: rotate3d(0, 1, 0, 0deg);
+        }
     }
-  }
 }
 </style>

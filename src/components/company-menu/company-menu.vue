@@ -1,21 +1,31 @@
 <template>
-  <div :class="classes" ref="button">
-      <button class="hamburger on-dark"><i></i></button>
-      <left-pane class="bg-green" ref="menu">
-        <div class="link-list">
-          <div><a href="/" ref="aboutUs">About us</a></div>
-          <div><a href="/" ref="contact">Contact</a></div>
-          <div><a href="/" ref="support">Support</a></div>
-          <!-- <div><a href="/" onclick="return false;">Charity</a></div>
-          <div><a href="/" onclick="return false;">Blog</a></div>
-          <div><a href="/" onclick="return false;">Contact</a></div> -->
-        </div>
-      </left-pane>
+  <div class="dropdown company-menu">
+    <a
+      class="btn btn-link dropdown-toggle d-inline-flex align-items-center size-125"
+      href="#"
+      role="button"
+      id="companyMenu"
+      data-toggle="dropdown"
+      aria-haspopup="true"
+      aria-expanded="false"
+    >
+      <font-awesome-icon icon="bars"/>
+    </a>
+
+    <div class="dropdown-menu" aria-labelledby="companyMenu">
+      <a class="dropdown-item" href="#" ref="aboutUs">About us</a>
+      <a class="dropdown-item" href="#" ref="support">Support</a>
+    </div>
   </div>
 </template>
 
 <script lang="ts" src="./company-menu.ts"></script>
 
 <style lang="scss">
+.company-menu {
 
+  .dropdown-toggle::after {
+    display: none;
+  }
+}
 </style>

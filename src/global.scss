@@ -1,14 +1,393 @@
+$primary-color:#2c9bc9;
+$primary-dark-color:#2a658b;
+$primary-light-color:#39d0ff;
+$dark-color: #25274d;
+$inactive-color: #a9abb7;
+$light-color: #f2f2f2;
+$hightlight-color: #f9bb2d;
+$hightlight-dark-color: #e2950f;
+
+
+$white: #fff;
+$black: #000;
+$green: $primary-color;
+$blue: $primary-dark-color;
+$orange: $hightlight-dark-color;
+$yellow: $hightlight-color;
+$red: #c10005;
+
+// Create grayscale
+$gray-dark: #292b2c;
+$gray: #3f3f3f;
+$gray-light: #7e7e7e;
+$gray-lighter: #ededed;
+$gray-lightest: #fafafa;
+
+// Set brand colors
+$primary: $primary-color;
+$success: $primary-color;
+$info: $light-color;
+$warning: $hightlight-color;
+$danger: $red;
+
+// Override button colors
+$btn-info-color: darken($info, 45);
+
+// Override alert background colors
+$state-success-bg: lighten($success, 30);
+$state-info-bg: lighten($info, 30);
+$state-warning-bg: lighten($warning, 30);
+$state-danger-bg: lighten($danger, 45);
+
+// Override alert text colors
+$state-success-text: darken($success, 30);
+$state-info-text: darken($info, 30);
+$state-warning-text: darken($warning, 30);
+$state-danger-text: darken($danger, 10);
+
+// Override badges padding (doubled because otherwise too crammed)
+$badge-padding-x: 0.8em;
+$badge-padding-y: 0.4em;
+
+// Don't make badges normal instead of bold
+$badge-font-weight: normal;
+
+// Override fonts
+$font-family-sans-serif: "Nunito Sans",
+Helvetica,
+Arial,
+sans-serif;
+$font-family-serif: "Nunito Sans",
+Helvetica,
+Arial,
+sans-serif;
+$font-family-monospace: "Nunito Sans",
+Helvetica,
+Arial,
+sans-serif;
+$font-family-base: $font-family-sans-serif;
+
+// Set global options
+$enable-shadows: true;
+$enable-gradients: true;
+
+$liftedShadow: 0px 1px 1px rgba(0, 0, 0, 0.19),
+0px 2px 5px rgba(0, 0, 0, 0.05),
+0px 2px 15px rgba(0, 0, 0, 0.05);
+
+$liftedShadowLight: 0px 1px 0px rgba(0, 0, 0, 0.05),
+0px 1px 1px rgba(0, 0, 0, 0.1);
+
+$liftedShadowDark: 0px 1px 1px rgba(0, 0, 0, 0.4),
+0px 2px 5px rgba(0, 0, 0, 0.1),
+0px 2px 15px rgba(0, 0, 0, 0.1);
+
+$liftedShadowError: 0px 0px 0px 1px transparentize($red, 0.60),
+0px 2px 1px transparentize($red, 0.60),
+0px 2px 5px transparentize($red, 0.9),
+0px 2px 15px transparentize($red, 0.9);
+
 html {
     height: 100%;
-}
 
-body {
-    min-height: 100%;
-    margin: 0px;
-    font-family: "Roboto", Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    --overlay-color: rgba(75, 152, 189, 0.13);
-    --primary-color: rgb(60, 155, 201);
-    --secondary-color: rgb(81, 91, 101);
+    body {
+        min-height: 100vh;
+        padding: 58px 0rem 2rem;
+        margin: 0px 0px 0px;
+        font-family: "Nunito Sans", Helvetica, Arial, sans-serif;
+        font-size: 1rem;
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+
+        .btn {
+            cursor: pointer;
+            border-radius: 1px;
+            border: none !important;
+            transition: all 0.1s;
+        }
+
+        .btn-primary {
+            background-color: $primary-color;
+            box-shadow: none;
+            // box-shadow: $liftedShadowLight;
+
+            &:hover,
+            &:active,
+            &:focus,
+            &:not(:disabled):not(.disabled):active:focus {
+                background-color: $dark-color;
+                box-shadow: none;
+                // box-shadow: $liftedShadowDark;
+                // font-size: 1.125rem;
+                // margin: -0.2rem;
+            }
+
+        }
+
+        .btn-secondary {
+            background-color: $hightlight-color;
+            box-shadow: $liftedShadowLight;
+
+            &:hover,
+            &:active,
+            &:focus,
+            &:not(:disabled):not(.disabled):active:focus {
+                background-color: $hightlight-dark-color;
+                box-shadow: none;
+                // font-size: 1.125rem;
+                // margin: -0.2rem;
+            }
+
+        }
+
+        .btn-link {
+            color: $primary-color;
+
+            &:hover {
+                color: $dark-color;
+            }
+        }
+
+        .dropdown-menu {
+            border-radius: 1px;
+            border: none;
+            padding: 0rem;
+            box-shadow: $liftedShadow;
+
+            .dropdown-item {
+                transition: color 0.2s, background-color 0.2s;
+                padding: .5rem 1.5rem;
+            }
+
+            .dropdown-item:focus,
+            .dropdown-item:hover {
+                color: $light-color;
+                text-decoration: none;
+                background-color: $dark-color;
+            }
+        }
+
+        .form-control:focus {
+            box-shadow: inset 0px 0px 0px 1px transparentize($primary, 0.9), 0px 0px 0px 1px rgba($primary, 0.9);
+        }
+
+        input,
+        select,
+        textarea,
+        button {
+            outline: none !important;
+            border-radius: 1px !important;
+            border: none !important;
+            box-shadow: none;
+            // box-shadow: inset 0px 0px 0px 1px rgba(0, 0, 0, 0.16), 0px 0px 0px 1px rgba(0, 0, 0, 0.04);
+        }
+
+        button.btn {
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        input,
+        textarea {
+            box-shadow: 0px 1px 0px 0px rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+        }
+
+        input:focus,
+        input:active,
+        textarea:focus,
+        textarea:active,
+        input.form-control:focus,
+        textarea.form-control:active,
+        .form-group input:focus,
+        .form-group input:active,
+        .form-group textarea:focus,
+        .form-group textarea:active,
+        .form-group input.form-control:focus,
+        .form-group textarea.form-control:active {
+            box-shadow: 0px 1px 0px 0px $primary-color, 0px 2px 0px 0px transparentize($primary-color, 0.8);
+            padding: 0.5rem;
+        }
+
+        .is-invalid input,
+        .is-invalid select,
+        .is-invalid textarea,
+        .is-invalid button,
+        input.is-invalid,
+        select.is-invalid,
+        textarea.is-invalid,
+        button.is-invalid,
+        .is-invalid input:focus,
+        .is-invalid select:focus,
+        .is-invalid textarea:focus,
+        .is-invalid button:focus,
+        input.is-invalid:focus,
+        select.is-invalid:focus,
+        textarea.is-invalid:focus,
+        button.is-invalid:focus,
+        .is-invalid input:active,
+        .is-invalid select:active,
+        .is-invalid textarea:active,
+        .is-invalid button:active,
+        input.is-invalid:active,
+        select.is-invalid:active,
+        textarea.is-invalid:active,
+        button.is-invalid:active {
+            box-shadow: 0px 1px 0px 0px transparentize($red, 0.5);
+            color: $red;
+        }
+
+        input:-webkit-autofill {
+            background-color: transparent !important;
+        }
+
+        input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+        }
+
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus,
+        input:-webkit-autofill:active {
+            -webkit-transition-delay: 99999s;
+        }
+
+        input[type="checkbox"] {
+            width: 0px;
+            height: 0px;
+            opacity: 0;
+            padding: 0px;
+            margin: 0px;
+            pointer-events: none;
+            position: absolute;
+        }
+
+        input[type="checkbox"]+label {
+            align-items: flex-start;
+            cursor: pointer;
+
+            &:before {
+                content: "";
+                width: 0px;
+                height: 0px;
+                display: inline-block;
+                padding: 0.5rem;
+                box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.3);
+                position: relative;
+                left: 1px;
+                margin-right: 1rem;
+                margin-top: 0.25rem;
+                border-radius: 1px;
+                cursor: pointer;
+                transition: box-shadow 0.2s ease-in-out, background-color 0.2s ease-in-out;
+            }
+
+            .checkbox-label {
+                font-weight: bold;
+                display: block;
+            }
+
+            .checkbox-message {
+                font-size: 80%;
+            }
+        }
+
+        input[type="checkbox"]:checked+label:before,
+        input[type="checkbox"]:checked+label:before {
+            box-shadow: inset 0px 0px 0px 1px transparentize($primary, 0.9), 0px 0px 0px 1px rgba($primary, 0.9);
+            background-color: $primary;
+        }
+
+        label {
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .content-section {
+            width: 100%;
+            max-width: 1280px;
+            margin: auto;
+            padding: 25px;
+        }
+
+        .label-error {
+            font-size: 80%;
+            color: $red;
+            padding: 0rem 0.5em;
+            font-weight: normal;
+        }
+
+        .form-group.label-inside.icon {
+
+            svg {
+                display: inline-block;
+                opacity: 0.5;
+                margin-right: 0.3rem;
+            }
+        }
+
+        .form-group.label-inside {
+            display: flex;
+            flex-direction: column-reverse;
+            margin: 2rem 0rem;
+            position: relative;
+
+            svg {
+                display: none;
+            }
+
+            label {
+                pointer-events: none;
+                position: relative;
+                top: 1.25rem;
+                opacity: 0.75;
+                font-weight: normal;
+                margin: 0rem;
+                line-height: 1.25rem;
+                font-size: 1rem;
+                color: $gray;
+                transition: all 0.2s;
+            }
+
+            input,
+            textarea {
+                padding: 0.5rem;
+                transition: all 0.2s;
+            }
+
+            input {
+                height: 2rem;
+                color: $dark-color
+            }
+
+            input.focused+label,
+            input.not-empty+label {
+                top: -0.125rem;
+                opacity: 1;
+                font-weight: 700;
+                font-size: 0.75rem;
+                color: $dark-color;
+
+                .label-error {
+                    font-size: 100%;
+                }
+            }
+
+            input.focused+label {
+                color: $primary;
+            }
+        }
+
+        .form-group-bottom {
+            margin-top: 3rem;
+        }
+    }
+
+    * {
+        box-sizing: border-box;
+        color: inherit;
+        font: inherit;
+        backface-visibility: hidden;
+    }
 }

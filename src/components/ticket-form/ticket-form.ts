@@ -1,12 +1,9 @@
 import { Component, Vue } from 'vue-property-decorator'
 import state from '@/services/state'
-import InputLabel from '../input-label/input-label.vue'
 import requests from '@/services/requests'
 
 @Component({
-    components: {
-        'input-label': InputLabel
-    }
+    components: {}
 })
 export default class TicketForm extends Vue {
 
@@ -20,8 +17,7 @@ export default class TicketForm extends Vue {
 
     public submit() {
         const ticket = JSON.parse(JSON.stringify(this.ticket))
-        console.log(ticket)
-        // requests.post(`/support/ticket`, this.ticket)
+        requests.post(`/support/ticket`, this.ticket)
     }
 
     public formUpdate(e: any) {

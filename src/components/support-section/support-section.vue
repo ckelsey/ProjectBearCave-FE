@@ -19,5 +19,4 @@
 
 <script lang="ts" src="./support-section.ts"></script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

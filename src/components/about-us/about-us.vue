@@ -1,26 +1,47 @@
 <template>
-  <content-section ref="contentSection" :show="state.state==='about'">
+  <content-section ref="contentSection">
     <div class="about-us-container">
       <section id="about-us-top" class="content-section-inner">
         <div class="text-section">
           <h4 class="heading">{{subTitle}}</h4>
-          <h1 class="heading">{{title}}</h1>
+          <h2 class="heading">{{title}}</h2>
           <p>{{message}}</p>
-          <p>
-            <button class="border-orange bold" ref="contact">Contact us</button>
-          </p>
         </div>
         <div class="image" :style="style"></div>
       </section>
 
       <section id="about-us-profiles" class="content-section-inner">
-        <h1>Multiple personalities. No egos</h1>
+        <h2>Multiple personalities. No egos</h2>
         <div id="team">
-          <a v-for="profile in team" :key="profile.id" class="profile" :href="profile.link" target="_blank">
+          <a
+            v-for="profile in team"
+            :key="profile.id"
+            class="profile"
+            :href="profile.link"
+            target="_blank"
+          >
             <div class="profile-image" :style="profileImage(profile.img)"></div>
             <div class="profile-name">{{profile.name}}</div>
             <div class="profile-title">{{profile.title}}</div>
           </a>
+        </div>
+      </section>
+      <section class="content-section-inner support-form">
+        <div class="d-flex align-items-start justify-content-between">
+          <div class="w-100">
+            <h2>Contact us</h2>
+            <ticket-form></ticket-form>
+          </div>
+          <div class="w-100">
+            <div>
+              <h2>Address</h2>
+              <p>{{street}}</p>
+              <p>{{city}}, {{addressState}} {{zip}}</p>
+            </div>
+            <div>
+              <a class="primary" :href="emailLink">{{email}}</a>
+            </div>
+          </div>
         </div>
       </section>
     </div>
@@ -34,7 +55,11 @@
   height: 100%;
   overflow: auto;
   padding-bottom: 42px;
-  
+
+  section {
+    margin: 0rem 0rem 4rem;
+  }
+
   #about-us-top {
     display: flex;
 
@@ -56,10 +81,6 @@
     }
   }
   #about-us-profiles {
-    h1 {
-      text-align: center;
-    }
-
     #team {
       display: flex;
       flex-wrap: wrap;

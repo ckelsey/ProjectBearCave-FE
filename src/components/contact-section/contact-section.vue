@@ -33,13 +33,4 @@
 
 <script lang="ts" src="./contact-section.ts"></script>
 
-<style lang="scss">
-h1 button {
-  margin-left: 21px;
-}
-
-.contact-form {
-  display: flex;
-  justify-content: space-between;
-}
-</style>
+<style lang="scss"></style>

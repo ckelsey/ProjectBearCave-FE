@@ -9,6 +9,8 @@ declare module '*.html' {
     export default content;
 }
 
+declare module 'material-components-vue/dist/button';
+
 interface UserModel {
     email: string
 }
