@@ -25,6 +25,7 @@
     "semicolon": false,
     "no-console": false,
     "trailing-comma": false,
-    "max-line-length": false
+    "max-line-length": false,
+    "arrow-parens": false
   }
 }

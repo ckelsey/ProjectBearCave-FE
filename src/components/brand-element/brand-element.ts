@@ -1,40 +1,30 @@
-import { Component, Vue, Prop } from 'vue-property-decorator'
+import { Component, Vue } from 'vue-property-decorator'
 import constants from '@/services/constants'
-import state from '@/services/state';
+import state from '@/services/state'
 
 @Component({})
 export default class BrandElement extends Vue {
-    @Prop({ default: true })
-    public text: boolean | undefined
-
-    @Prop({ default: true })
-    public icon: boolean | undefined
 
     public state = state
 
     public get brandSrc() {
-        if (!this.icon) {
+        if (!constants.icon) {
             return ``
         }
 
-        return `assets/icons/cai_256.png`
+        return constants.icon
     }
-
 
     public get brandText() {
-        if (!this.text) {
+        if (!constants.siteName) {
             return ``
         }
 
-        return `${this.icon ? ` ` : ``}${constants.siteName}`
+        return `${constants.icon ? ` ` : ``}${constants.siteName}`
     }
 
-    public mounted() {
-        const brand = this.$refs.brand as HTMLElement
-
-        brand.addEventListener(`click`, () => {
-            this.state.state = `home`
-        })
-
+    public goHome(e: any) {
+        e.preventDefault()
+        this.state.state = ``
     }
 }

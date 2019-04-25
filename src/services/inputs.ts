@@ -46,6 +46,23 @@ class Inputs {
             return false
         }
     }
+
+    public static value(input: any) {
+        if (!input) { return undefined }
+
+        const type = input.type
+        let value = input.value
+
+        if (type === `checkbox` || type === `radio`) {
+            value = input.checked
+        }
+
+        if (type === `select` && input.selectedOptions) {
+            value = input.selectedOptions
+        }
+
+        return value
+    }
 }
 
 export default Inputs

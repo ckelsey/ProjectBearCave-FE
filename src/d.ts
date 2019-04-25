@@ -9,6 +9,11 @@ declare module '*.html' {
     export default content;
 }
 
+declare module '*.json' {
+    const content: string;
+    export default content;
+}
+
 declare module 'material-components-vue/dist/button';
 
 interface UserModel {

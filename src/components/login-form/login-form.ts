@@ -4,8 +4,7 @@ import user from '@/services/user'
 import { UserCredentials, ValidateResponse } from '@/types'
 import Errors from '@/services/error'
 import Validate from '@/services/validate'
-import Inputs from '@/services/inputs'
-import Utils from '@/services/utils';
+import Utils from '@/services/utils'
 
 interface FormInput {
     name: string
@@ -32,36 +31,11 @@ const registerInputs = [`confirmPassword`, `fname`, `lname`]
 
 const isRegisterInput = (name: string) => registerInputs.indexOf(name) > -1
 
-const setEmpty = (input: HTMLInputElement) => {
-    const notEmpty = Inputs.empty(input)
-    const hasNotEmptyClass = input.classList.contains(`not-empty`)
-
-    if (notEmpty && !hasNotEmptyClass) {
-        input.classList.add(`not-empty`)
-    }
-
-    if (!notEmpty && hasNotEmptyClass) {
-        input.classList.remove(`not-empty`)
-    }
-}
-
-const setFocus = (input: HTMLInputElement) => {
-    const focused = Inputs.focused(input)
-    const hasFocusedClass = input.classList.contains(`focused`)
-
-    if (focused && !hasFocusedClass) {
-        input.classList.add(`focused`)
-    }
-
-    if (!focused && hasFocusedClass) {
-        input.classList.remove(`focused`)
-    }
-}
-
 @Component({})
 export default class LoginForm extends Vue {
 
     public state = state
+    public lastState = ``
 
     public formData: FormInputs = {}
     public enigma = false
@@ -74,6 +48,20 @@ export default class LoginForm extends Vue {
             value: false,
             error: ``
         }
+    }
+
+    public get formState() {
+        if (state.state === `register`) {
+            this.lastState = `show-register`
+            return `show-register`
+        }
+
+        if (state.state === `login`) {
+            this.lastState = `show-login`
+            return `show-login`
+        }
+
+        return this.lastState
     }
 
     public validateInput(input: FormInput) {
@@ -145,38 +133,21 @@ export default class LoginForm extends Vue {
         if (!valid) { return }
 
         if (!isLogin) {
+            data[`clientYN`] = 1
             method = user.register
         }
 
         return method(data as UserCredentials)
             .then(() => {
-                this.state.state = `account`
-             })
+                this.state.state = `profile`
+            })
             .catch(Errors.alert)
-    }
-
-    public checkInputState() {
-
-        const inputs = Array.from(document.body.querySelectorAll(`.login-register-form input`))
-        inputs.forEach((input) => {
-
-            setEmpty(input as HTMLInputElement)
-            setFocus(input as HTMLInputElement)
-        })
-    }
-
-    public formInput(inputData: FormInput) {
-        this.checkInputState()
-
-        if (!inputData.validation.valid) {
-            this.validateInput(inputData)
-        }
     }
 
     public switchForm(type: string) {
         Utils.scrollToTop(100)
         this.createData()
-        this.state.state  = type
+        this.state.state = type
     }
 
     public createData() {
@@ -200,12 +171,6 @@ export default class LoginForm extends Vue {
         })
 
         this.formData = Object.assign({}, formData)
-
-        const inputs = Array.from(document.body.querySelectorAll(`.login-register-form input`))
-        inputs.forEach((input) => {
-            input.classList.remove(`focused`)
-            input.classList.remove(`not-empty`)
-        })
     }
 
     public mounted() {

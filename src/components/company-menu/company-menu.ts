@@ -1,25 +1,36 @@
 import { Component, Vue } from 'vue-property-decorator'
 import state from '@/services/state'
+import PanelContent from '../panel-content/panel-content'
 
 @Component({
     components: {
+        'panel-content': PanelContent
     }
 })
 export default class CompanyMenu extends Vue {
     public state = state
 
-    public mounted() {
-        const aboutUs = this.$refs.aboutUs as HTMLElement
-        const support = this.$refs.support as HTMLElement
+    public get $panel() {
+        return this.$refs.panel as any
+    }
 
-        aboutUs.addEventListener(`click`, (e) => {
-            e.preventDefault()
-            this.state.state = `about`
-        })
+    public getPanelToggler() {
+        return this.$refs.panelToggler
+    }
 
-        support.addEventListener(`click`, (e) => {
-            e.preventDefault()
-            this.state.state = `support`
-        })
+    public goToAbout(e: Event) {
+        e.preventDefault()
+        this.state.state = `about`
+        this.$panel.toggle()
+    }
+
+    public goToSupport(e: Event) {
+        e.preventDefault()
+        this.state.state = `support`
+        this.$panel.toggle()
+    }
+
+    public togglePanel(e: Event) {
+        e.preventDefault()
     }
 }

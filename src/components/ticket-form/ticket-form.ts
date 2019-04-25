@@ -16,7 +16,6 @@ export default class TicketForm extends Vue {
     }
 
     public submit() {
-        const ticket = JSON.parse(JSON.stringify(this.ticket))
         requests.post(`/support/ticket`, this.ticket)
     }
 

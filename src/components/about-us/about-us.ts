@@ -10,7 +10,7 @@ import TicketForm from '../ticket-form/ticket-form'
     }
 })
 export default class AboutUs extends Vue {
-    public svg = `https://designdroide.com/images/software-developer-character-set.svg`
+    public svg = `` // `https://designdroide.com/images/software-developer-character-set.svg`
     public state = state
     public title = `People that care`
     public subTitle = `who we are`
@@ -37,25 +37,29 @@ export default class AboutUs extends Vue {
             name: `Carly Marly`,
             title: `Eats barley`,
             link: `https://www.linkedin.com/in/carly-marly-1829804b`,
-            img: `https://www.eharmony.co.uk/dating-advice/wp-content/uploads/2011/04/profilephotos-960x640.jpg`
+            img: ``
+            // img: `https://www.eharmony.co.uk/dating-advice/wp-content/uploads/2011/04/profilephotos-960x640.jpg`
         }, {
             id: 2,
             name: `Lorem ipsum`,
             title: `Cool person`,
             link: `https://www.linkedin.com/company/loremipsum-`,
-            img: `https://content-static.upwork.com/uploads/2014/10/02123010/profilephoto_goodcrop.jpg`
+            img: ``
+            // img: `https://content-static.upwork.com/uploads/2014/10/02123010/profilephoto_goodcrop.jpg`
         }, {
             id: 3,
             name: `Joe Shmo`,
             title: `Tech bro`,
             link: `https://www.linkedin.com/in/joe-shmo-49098a96`,
-            img: `https://images.pexels.com/photos/736716/pexels-photo-736716.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500`
+            img: ``
+            // img: `https://images.pexels.com/photos/736716/pexels-photo-736716.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500`
         }, {
             id: 4,
             name: `Jane Dane`,
             title: `Flies airplane`,
             link: `https://www.linkedin.com/in/jane-dane-21092615`,
-            img: `https://content-static.upwork.com/uploads/2014/10/01073427/profilephoto1.jpg`
+            img: ``
+            // img: `https://content-static.upwork.com/uploads/2014/10/01073427/profilephoto1.jpg`
         }]
     }
 

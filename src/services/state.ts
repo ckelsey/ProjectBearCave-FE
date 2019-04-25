@@ -1,109 +1,109 @@
-interface StringObject { [key: string]: string }
+import Subject from '@/utils/subject'
+import routes from './routes'
 
 class State {
-    public query: StringObject = {}
-    public urlStates: any = []
-    private State: string = `home`
+    public timer: any
+    public alert$ = new Subject({ msg: ``, active: false, status: ``, closeIn: 0 })
 
+    public get alert() {
+        return this.alert$.value
+    }
+
+    public set alert(val) {
+        this.alert$.next(val)
+    }
+
+    public stateObserver$ = new Subject(undefined)
+
+    public profileObserver$ = new Subject(undefined)
+
+    public Profile: any = undefined
+    public get profile() {
+        return this.Profile
+    }
+
+    public set profile(val) {
+        this.Profile = val
+        this.profileObserver$.next(val)
+    }
+
+    private State: any = undefined
     public get state() {
         return this.State
     }
 
     public set state(val) {
-        this.setState(`p`, val)
+
+        if (val === undefined) { return }
+
+        clearTimeout(this.timer)
+
+        this.timer = setTimeout(() => {
+
+            this.setState(val)
+                .then((route) => {
+
+                    this.State = route
+                    this.stateObserver$.next(route)
+                    this.pushHistory(route)
+                })
+                .catch((err) => {
+                    /* TODO */
+                    console.log(`STATE ERROR`, err)
+                })
+        }, 33)
     }
 
     constructor() {
-        this.query = this.setQuery()
+        this.closeAlert = this.closeAlert.bind(this)
 
-        // Update states on popstate
-        window.addEventListener('popstate', () => {
-            const last = this.urlStates.pop()
+        routes
+            .route()
+            .then((route) => { this.state = route })
 
-            if (this.urlStates.length) {
-                if (JSON.stringify(last) === JSON.stringify(this.urlStates[this.urlStates.length - 1])) {
-                    this.urlStates.pop()
-                    return history.back()
+        window.addEventListener('popstate', (e) => {
+            routes
+                .route(e.state)
+                .then((route) => { this.state = route })
+        })
+    }
+
+    public closeAlert() {
+        this.alert = Object.assign({}, {
+            msg: ``,
+            active: false,
+            status: ``,
+            closeIn: 0
+        })
+    }
+
+    public newUrl(path: string) {
+        return `${location.origin}/${path}`
+    }
+
+    public pushHistory(route: string) {
+        window.history.pushState(
+            route,
+            routes.title(route),
+            `${location.origin}/${route}`
+        )
+    }
+
+    public setState(val: string): Promise<string> {
+
+        if (val === undefined) {
+            return Promise.reject(`state is undefined`)
+        }
+
+        return routes
+            .route(val)
+            .then((route) => {
+                if (route === this.state && this.state === routes.path()) {
+                    throw new Error(`state is already set to ${val}`)
                 }
-            }
-        })
-    }
 
-    public getQuery(): StringObject {
-        const searchString: string = window.location.search
-        const results: StringObject = {}
-
-        if (!searchString) {
-            return results
-        }
-
-        const search: string[] = searchString.substr(1).split('&')
-
-        search.forEach((s) => {
-            const key = s.split('=').shift()
-
-            if (key) {
-                const val: string = s.split(`${key}=`)[1]
-
-                if (val && val !== 'undefined' && val !== '') {
-                    results[key] = val
-                }
-            }
-        })
-
-        this.query = this.clearEmptyQuery(results)
-
-        return this.query
-    }
-
-    public clearEmptyQuery(query: StringObject): StringObject {
-        if (!query) {
-            return {}
-        }
-
-        Object.keys(query).forEach((key) => {
-            if (query[key] === `` || query[key] === `undefined` || query[key] === `null` || query[key] === null || query[key] === undefined) {
-                delete query[key]
-            }
-        })
-
-        return query
-    }
-
-    public setState(key: string, val: string): StringObject {
-        if (!key || key === ``) {
-            return this.query
-        }
-
-        this.setQuery(Object.assign({}, this.query, { [key]: val }))
-
-        return this.query
-    }
-
-    public setQuery(data?: StringObject) {
-        this.query = this.clearEmptyQuery((data || this.getQuery()))
-
-        if (this.query[`p`]) {
-            this.State = this.query[`p`]
-        }
-
-        history.replaceState(this.query, window.document.title, window.location.origin + window.location.pathname + this.getQueryString(this.query))
-
-        return this.query
-    }
-
-    public getQueryString(data: StringObject): string {
-        const params: string[] = []
-
-        Object.keys(data).forEach((key) => {
-            params.push(`${key}=${data[key]}`)
-        })
-
-        if (params.length === 0) {
-            return ``
-        }
-
-        return `?${params.join(`&`)}`
+                return route
+            })
     }
 }
 

@@ -22,6 +22,235 @@ const Empty = (val: any): boolean => {
 }
 
 class Validate {
+    public static usZipCode(
+        val: any,
+    ): ValidateResponse {
+        const original = val
+        const reasons: string[] = []
+        let result = val
+
+        if (!/(^\d{5}$)|(^\d{5}-\d{4}$)/.test(val)) {
+            result = undefined
+            reasons.push(`invalid`)
+        }
+
+        return {
+            original,
+            valid: reasons.length === 0,
+            sanitized: result,
+            reason: reasons
+        }
+    }
+
+    public static oneOf(
+        options: any,
+        val: any,
+    ): ValidateResponse {
+        const original = val
+        const reasons: string[] = []
+        let result = val
+
+        if (options.indexOf(val) === -1) {
+            result = undefined
+            reasons.push(`invalid`)
+        }
+
+        return {
+            original,
+            valid: reasons.length === 0,
+            sanitized: result,
+            reason: reasons
+        }
+    }
+
+    public static dateBefore(
+        before: any,
+        val: any,
+    ): ValidateResponse {
+        const original = val
+        const reasons: string[] = []
+        const parsedBefore = Date.parse(before.toString())
+        const parsedVal = Date.parse(val.toString())
+        let result = val
+
+        if (isNaN(parsedBefore)) {
+            result = null
+            reasons.push(`invalid before date`)
+        }
+
+        if (isNaN(parsedVal)) {
+            result = null
+            reasons.push(`invalid date`)
+        }
+
+        if (parsedBefore <= parsedVal) {
+            result = null
+            reasons.push(`date is out of range`)
+        }
+
+        return {
+            original,
+            valid: reasons.length === 0,
+            sanitized: result,
+            reason: reasons
+        }
+    }
+
+    public static year(
+        val: any,
+    ): ValidateResponse {
+        const original = val
+        const reasons: string[] = []
+        const parsedVal = new Date(val).getUTCFullYear()
+        let result = val
+
+        if (parsedVal.toString() !== val.toString()) {
+            result = undefined
+            reasons.push(`invalid year`)
+        }
+
+        return {
+            original,
+            valid: reasons.length === 0,
+            sanitized: result,
+            reason: reasons
+        }
+    }
+
+    public static dateAfter(
+        after: any,
+        val: any,
+    ): ValidateResponse {
+        const original = val
+        const reasons: string[] = []
+        const parsedAfter = Date.parse(after.toString())
+        const parsedVal = Date.parse(val.toString())
+        let result = val
+
+        if (isNaN(parsedAfter)) {
+            result = null
+            reasons.push(`invalid after date`)
+        }
+
+        if (isNaN(parsedVal)) {
+            result = null
+            reasons.push(`invalid date`)
+        }
+
+        if (parsedAfter >= parsedVal) {
+            result = null
+            reasons.push(`date is out of range`)
+        }
+
+        return {
+            original,
+            valid: reasons.length === 0,
+            sanitized: result,
+            reason: reasons
+        }
+    }
+
+    public static date(
+        val: any,
+        input?: HTMLInputElement
+    ): ValidateResponse {
+        const original = val
+        const reasons: string[] = []
+        const invalid = invalidMessage(input)
+        let result = val
+
+        if (invalid !== undefined) {
+            reasons.push(invalid.toLowerCase())
+        }
+
+        if (isNaN(Date.parse(val.toString()))) {
+            result = null
+            reasons.push(`invalid date`)
+        }
+
+        return {
+            original,
+            valid: reasons.length === 0,
+            sanitized: result,
+            reason: reasons
+        }
+    }
+
+    public static phone(
+        val: any,
+        input?: HTMLInputElement
+    ): ValidateResponse {
+        const original = val
+        const reasons: string[] = []
+        const invalid = invalidMessage(input)
+        let result
+
+        if (invalid !== undefined) {
+            reasons.push(invalid.toLowerCase())
+        }
+
+        if (val) {
+            const numberREGEX = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im
+            result = val.replace(/\D/g, '')
+
+            if (result.length === 10) {
+                result = `1${result}`
+            }
+
+            const length = result.length
+
+            if (!numberREGEX.test(result)) {
+                reasons.push(`invalid characters`)
+            }
+
+            if (length < 11) {
+                reasons.push(`not enough digits`)
+            }
+        }
+
+        return {
+            original,
+            valid: reasons.length === 0,
+            sanitized: result,
+            reason: reasons
+        }
+    }
+
+    public static bool(
+        val: any,
+        input?: HTMLInputElement
+    ): ValidateResponse {
+        const original = val
+        const reasons: string[] = []
+        let result
+
+        if (val === true || val === `on` || val === `true`) {
+            result = true
+        }
+
+        if (val === false || val === `off` || val === `false`) {
+            result = false
+        }
+
+        if (result === undefined) {
+            result = false
+            reasons.push(`not valid`)
+        }
+
+        const invalid = invalidMessage(input)
+
+        if (invalid !== undefined) {
+            reasons.push(invalid.toLowerCase())
+        }
+
+        return {
+            original,
+            valid: reasons.length === 0,
+            sanitized: !!result,
+            reason: reasons
+        }
+    }
+
     public static number(
         num: number,
         input?: HTMLInputElement

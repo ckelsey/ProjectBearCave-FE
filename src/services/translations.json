@@ -1,0 +1,53 @@
+{
+    "account": {
+        "en-US": "account"
+    },
+
+    "AccountSettings": {
+        "en-US": "Account settings"
+    },
+
+    "address": {
+        "en-US": "address"
+    },
+
+    "Addresses": {
+        "en-US": "Addresses"
+    },
+
+    "employment": {
+        "en-US": "employment"
+    },
+
+    "EmploymentHistory": {
+        "en-US": "Employment history"
+    },
+
+    "PhoneNumbers": {
+        "en-US": "Phone numbers"
+    },
+
+    "phone": {
+        "en-US": "phone"
+    },
+
+    "profile":{
+        "en-US": "profile"
+    },
+
+    "ProfileCompletion": {
+        "en-US": "Profile completion"
+    },
+
+    "profileHeader": {
+        "en-US": "Hey there"
+    },
+
+    "vehicle": {
+        "en-US": "vehicle"
+    },
+
+    "Vehicles": {
+        "en-US": "Vehicles"
+    }
+}

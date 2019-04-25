@@ -2,16 +2,24 @@ const fs = require(`fs`)
 module.exports = {
     chainWebpack: config => {
         config.module
-            .rule('html')
+            .rule("html")
             .test(/\.html$/)
-            .use('html-loader?exportAsEs6Default')
-            .loader('html-loader?exportAsEs6Default')
+            .use("html-loader?exportAsEs6Default")
+            .loader("html-loader?exportAsEs6Default")
             .end()
+
+        // config.module
+        //     .rule("snapsvg")
+        //     .test(require.resolve("snapsvg"))
+        //     .use("imports-loader?this=>window,fix=>module.exports=0")
+        //     .loader("imports-loader")
+        //     .end();
     },
-    devServer:{
+    devServer: {
         https: {
             key: fs.readFileSync(`${__dirname}/self.key`),
-            cert: fs.readFileSync(`${__dirname}/self.crt`),
+            cert: fs.readFileSync(`${__dirname}/self.crt`)
         }
-    }
-}
+    },
+    assetsDir: "./assets"
+};

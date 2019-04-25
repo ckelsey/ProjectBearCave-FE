@@ -1,31 +1,45 @@
 <template>
-  <div class="dropdown company-menu">
-    <a
-      class="btn btn-link dropdown-toggle d-inline-flex align-items-center size-125"
-      href="#"
-      role="button"
-      id="companyMenu"
-      data-toggle="dropdown"
-      aria-haspopup="true"
-      aria-expanded="false"
-    >
-      <font-awesome-icon icon="bars"/>
-    </a>
+    <div class="company-menu">
+        <a
+            class="btn btn-link d-inline-flex align-items-center icon-lg"
+            id="companyMenu"
+            href=""
+            ref="panelToggler"
+            @click="togglePanel($event)"
+        >
+            <font-awesome-icon icon="bars" />
+        </a>
 
-    <div class="dropdown-menu" aria-labelledby="companyMenu">
-      <a class="dropdown-item" href="#" ref="aboutUs">About us</a>
-      <a class="dropdown-item" href="#" ref="support">Support</a>
+        <panel-content
+            direction="left"
+            ref="panel"
+            v-bind:toggler="getPanelToggler"
+        >
+            <a
+                class="list-item"
+                :class="state.state === `about`?`highlight`:``"
+                href="/about"
+                @click="goToAbout($event)"
+            >About us</a>
+            <a
+                class="list-item"
+                :class="state.state === `support`?`highlight`:``"
+                href="/support"
+                @click="goToSupport($event)"
+            >Support</a>
+        </panel-content>
     </div>
-  </div>
 </template>
 
 <script lang="ts" src="./company-menu.ts"></script>
 
 <style lang="scss">
 .company-menu {
-
-  .dropdown-toggle::after {
-    display: none;
-  }
+    .panel-content {
+        a {
+            display: block;
+            cursor: pointer;
+        }
+    }
 }
 </style>
