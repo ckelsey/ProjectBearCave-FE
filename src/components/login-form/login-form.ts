@@ -5,6 +5,7 @@ import { UserCredentials, ValidateResponse } from '@/types'
 import Errors from '@/services/error'
 import Validate from '@/services/validate'
 import Utils from '@/services/utils'
+import constants from '@/services/constants';
 
 interface FormInput {
     name: string
@@ -33,10 +34,9 @@ const isRegisterInput = (name: string) => registerInputs.indexOf(name) > -1
 
 @Component({})
 export default class LoginForm extends Vue {
-
+    public constants = constants
     public state = state
     public lastState = ``
-
     public formData: FormInputs = {}
     public enigma = false
     public consent = {

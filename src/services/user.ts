@@ -1,4 +1,5 @@
 /** TODO
+ * collapse forms
  * DECOUPLE UPLOADS AND USER
  * bug when adding phones
  * can't update anything
@@ -11,8 +12,7 @@ import FileUploader from './file-upload'
 import constants from './constants'
 import Observable from '@/utils/observable'
 import { ObserverObject } from '@/utils/types'
-import Get from '@/utils/get'
-import { UserSchema, UserDataToAPI } from './user-schema'
+import { UserSchema, UserDataToAPI, ValidateData } from './user-schema'
 import { FormFieldsFlat } from './user-forms';
 
 const urlKeys: { [key: string]: string } = {
@@ -58,6 +58,9 @@ class User {
 
         this.modelUser(existing)
         this.getUser(existing)
+
+            // tslint:disable-next-line:align
+            ; (window as any).user = this
     }
 
     public getDefault(key: string) {
@@ -147,8 +150,8 @@ class User {
 
                 if (!response.id) {
                     /** TODO get refresh path */
-                    // throw new Error(response)
-                    return
+                    throw new Error(response)
+                    // return
                 }
 
                 return this.modelUser(
@@ -162,68 +165,6 @@ class User {
             .catch(() => {
                 return this.logout()
             })
-    }
-
-    public validateData(data: any) {
-        const model: any = {}
-
-        Object.keys(data).forEach((key: string) => {
-            let val = data[key]
-            let schema = Get(UserSchema.properties, key)
-            let processed
-
-            if (!schema) {
-                return
-            }
-
-            if (Array.isArray(val)) {
-                if (schema.type !== `array`) {
-                    return
-                }
-
-                schema = schema.properties
-                model[key] = []
-
-                val.forEach((item: any) => {
-                    const itemToAdd: any = {}
-
-                    Object.keys(schema).forEach((schemaKey: string) => {
-                        let itemValue = item[schemaKey]
-
-                        if (schema[schemaKey].model) {
-                            itemValue = schema[schemaKey].model(item)
-                        }
-
-                        processed = schema[schemaKey].validation(itemValue, item[schema[schemaKey].validationRequires])
-
-                        if (processed.valid) {
-                            itemToAdd[schemaKey] = processed.sanitized
-                        } else {
-                            itemToAdd[schemaKey] = null
-                        }
-                    })
-
-                    model[key].push(itemToAdd)
-                })
-
-                return
-            }
-
-            if (schema.model) {
-                val = schema.model(data)
-            }
-
-            processed = schema.validation(val, data[schema.validationRequires])
-
-            if (processed.valid) {
-                model[key] = processed.sanitized
-            } else {
-                model[key] = null
-            }
-
-        })
-
-        return model
     }
 
     public setCompletionStats() {
@@ -267,7 +208,7 @@ class User {
             delete data.confirmPassword
         }
 
-        const model = this.validateData(data)
+        const model = ValidateData(data)
 
         this.model$.next(model)
         this.loggedIn$.next(!!model.token)
@@ -279,10 +220,10 @@ class User {
     }
 
     public update(data: any): Promise<UserModel> {
-        if (!this.loggedIn$.value) { return Promise.reject() }
+        if (!this.loggedIn$.value || !data) { return Promise.reject() }
 
         return new Promise((resolve, reject) => {
-            const model = Object.assign({}, this.model$.value, this.validateData(data))
+            const model = Object.assign({}, this.model$.value, ValidateData(data))
 
             return requests.put(`/user/${model.id}`, model)
                 .then((response: any) => {
@@ -301,6 +242,8 @@ class User {
     }
 
     public updateData(data: any, modelKey: string) {
+        if (!data || !modelKey) { return Promise.reject() }
+
         const urlKey = urlKeys[modelKey]
 
         if (!urlKey) { return Promise.reject(`invalid url`) }
@@ -375,6 +318,8 @@ class User {
     }
 
     public deleteData(data: any, modelKey: string) {
+        if (!data || !modelKey) { return Promise.reject() }
+
         const urlKey = urlKeys[modelKey]
 
         if (!urlKey) { return Promise.reject(`invalid url`) }
@@ -389,11 +334,13 @@ class User {
     }
 
     public verifyPhone(data: any) {
+        if (!data) { return Promise.reject() }
         this.verifing$.next({ data, show: true })
         return requests.post(`/user/${this.model$.value.id}/phonenum/${data.id}/verify`, data, this.model$.value.token)
     }
 
     public verifySMS(data: any, tokenVal: any) {
+        if (!data || !tokenVal) { return Promise.reject() }
         const url = `/user/${this.model$.value.id}/phonenum/${data.id}/verify/${tokenVal}`
         return requests.post(url, data, this.model$.value.token)
             .then(() => {
@@ -492,6 +439,16 @@ class User {
         })
     }
 
+    public deactivate() {
+        /** TODO */
+        this.modelUser(Object.assign({}, this.model$.value, { active: 0 }))
+    }
+
+    public activate() {
+        /** TODO */
+        this.modelUser(Object.assign({}, this.model$.value, { active: 1 }))
+    }
+
     private setReady() {
         if (this.ready$.value) { return }
 
@@ -502,101 +459,3 @@ class User {
 }
 
 export default new User()
-
-
-// public modelPhones(data: any) {
-    //     if (!data || !data.length) {
-    //         localStorage.removeItem(`CAI-USER-PHONES`)
-    //         this.phoneNumbers = []
-    //         this.phoneNumbers$.next(this.phoneNumbers)
-    //         return this.phoneNumbers
-    //     }
-
-    //     this.phoneNumbers = [].concat(data)
-    //     this.phoneNumbers$.next(this.phoneNumbers)
-
-    //     /** TODO - validate to make sure it's in the correct format */
-    //     localStorage.setItem(`CAI-USER-PHONES`, JSON.stringify(this.phoneNumbers))
-    //     return this.phoneNumbers
-    // }
-
-    // public modelEmployment(data: any) {
-    //     if (!data || !data.length) {
-    //         localStorage.removeItem(`CAI-USER-EMPLOYMENT`)
-    //         this.employment = []
-    //         this.employment$.next(this.employment)
-    //         return this.employment
-    //     }
-
-    //     this.employment = [].concat(data)
-    //     this.employment$.next(this.employment)
-
-    //     /** TODO - validate to make sure it's in the correct format */
-    //     localStorage.setItem(`CAI-USER-EMPLOYMENT`, JSON.stringify(this.employment))
-    //     return this.employment
-    // }
-
-    // public modelVehicles(data: any) {
-    //     if (!data || !data.length) {
-    //         localStorage.removeItem(`CAI-USER-VEHICLES`)
-    //         this.vehicles = []
-    //         this.vehicles$.next(this.vehicles)
-    //         return this.vehicles
-    //     }
-
-    //     this.vehicles = [].concat(data)
-    //     this.vehicles$.next(this.vehicles)
-
-    //     /** TODO - validate to make sure it's in the correct format */
-    //     localStorage.setItem(`CAI-USER-VEHICLES`, JSON.stringify(this.vehicles))
-    //     return this.vehicles
-    // }
-
-    // public modelAddresses(data: any) {
-    //     if (!data || !data.length || !data[0] || (data[0].address && !data[0].address.length)) {
-    //         localStorage.removeItem(`CAI-USER-ADDRESSES`)
-    //         this.addresses = []
-    //         this.addresses$.next(this.addresses)
-    //         return this.addresses
-    //     }
-
-    //     this.addresses = [].concat(data[0].address)
-    //     this.addresses$.next(this.addresses)
-
-    //     /** TODO - validate to make sure it's in the correct format */
-    //     localStorage.setItem(`CAI-USER-ADDRESSES`, JSON.stringify(this.addresses))
-    //     return this.addresses
-    // }
-
-
-    // public deletePhone(data: any) {
-    //     return this.deleteData(data, `phonenum`, `modelPhones`)
-    // }
-
-    // public deleteAddress(data: any) {
-    //     return this.deleteData(data, `address`, `modelAddresses`)
-    // }
-
-    // public deleteEmployment(data: any) {
-    //     return this.deleteData(data, `employment`, `modelEmployment`)
-    // }
-
-    // public deleteVehicle(data: any) {
-    //     return this.deleteData(data, `vehicle`, `modelVehicles`)
-    // }
-
-    // public savePhone(data: any) {
-    //     return this.updateData(data, `phonenum`, `phoneNumbers`)
-    // }
-
-    // public saveAddress(data: any) {
-    //     return this.updateData(data, `address`, `addresses`)
-    // }
-
-    // public saveEmployment(data: any) {
-    //     return this.updateData(data, `employment`, `employment`)
-    // }
-
-    // public saveVehicle(data: any) {
-    //     return this.updateData(data, `vehicle`, `vehicles`)
-    // }

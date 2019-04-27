@@ -1,5 +1,5 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import state from '@/services/state';
+import state from '@/services/state'
 
 @Component({
     components: {}

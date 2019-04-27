@@ -19,14 +19,32 @@
                 class="list-item"
                 :class="state.state === `about`?`highlight`:``"
                 href="/about"
-                @click="goToAbout($event)"
+                @click="goTo($event, `about`)"
             >About us</a>
             <a
                 class="list-item"
                 :class="state.state === `support`?`highlight`:``"
                 href="/support"
-                @click="goToSupport($event)"
+                @click="goTo($event, `support`)"
             >Support</a>
+            <a
+                class="list-item"
+                :class="state.state === `terms`?`highlight`:``"
+                href="/terms"
+                @click="goTo($event, `terms`)"
+            >Terms</a>
+            <a
+                class="list-item"
+                :class="state.state === `privacy`?`highlight`:``"
+                href="/privacy"
+                @click="goTo($event, `privacy`)"
+            >Privacy</a>
+            <a
+                class="list-item"
+                :class="state.state === `agreement`?`highlight`:``"
+                href="/agreement"
+                @click="goTo($event, `agreement`)"
+            >User agreement</a>
         </panel-content>
     </div>
 </template>

@@ -69,8 +69,8 @@ class Validate {
     ): ValidateResponse {
         const original = val
         const reasons: string[] = []
-        const parsedBefore = Date.parse(before.toString())
-        const parsedVal = Date.parse(val.toString())
+        const parsedBefore = Date.parse(!!before ? before.toString() : ``)
+        const parsedVal = Date.parse(!!val ? val.toString() : ``)
         let result = val
 
         if (isNaN(parsedBefore)) {
@@ -102,9 +102,10 @@ class Validate {
         const original = val
         const reasons: string[] = []
         const parsedVal = new Date(val).getUTCFullYear()
+        const valString = !!val ? val.toString() : ``
         let result = val
 
-        if (parsedVal.toString() !== val.toString()) {
+        if (!!parsedVal && parsedVal.toString() !== valString) {
             result = undefined
             reasons.push(`invalid year`)
         }
@@ -123,8 +124,8 @@ class Validate {
     ): ValidateResponse {
         const original = val
         const reasons: string[] = []
-        const parsedAfter = Date.parse(after.toString())
-        const parsedVal = Date.parse(val.toString())
+        const parsedAfter = Date.parse(!!after ? after.toString() : ``)
+        const parsedVal = Date.parse(!!val ? val.toString() : ``)
         let result = val
 
         if (isNaN(parsedAfter)) {
@@ -163,7 +164,7 @@ class Validate {
             reasons.push(invalid.toLowerCase())
         }
 
-        if (isNaN(Date.parse(val.toString()))) {
+        if (isNaN(Date.parse(!!val ? val.toString() : ``))) {
             result = null
             reasons.push(`invalid date`)
         }
@@ -294,7 +295,11 @@ class Validate {
             }
         }
 
-        if (typeof str !== `string`) {
+        if (!str) {
+            str = ``
+        }
+
+        if (typeof str !== `string` && str !== undefined) {
             str = (str as any).toString()
         }
 

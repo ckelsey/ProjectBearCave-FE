@@ -48,4 +48,3 @@
     </div>
 </template>
 <script lang="ts" src="./account-menu.ts"></script>
-<style lang-"scss"></style>

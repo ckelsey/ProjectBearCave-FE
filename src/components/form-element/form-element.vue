@@ -45,46 +45,48 @@
             </div>
         </div>
 
-        <div class="d-flex align-items-center mt-4">
-            <div>
-                <button
-                    class="btn btn-secondary"
-                    @click="submit($event)"
-                >{{!existing && !updateOnly ? `add` : `update`}}</button>
+        <div class="d-flex align-items-center justify-content-between w-100 mt-4">
+            <div class="d-flex align-items-center justify-content-start">
+                <div
+                    v-for="(item, index) in leftButtons"
+                    :key="index"
+                    class="pr-2 form-button"
+                    :class="item.position"
+                >
+                    <button
+                        v-if="item.type === `button` && item.condition"
+                        class="btn"
+                        :class="item.classes"
+                        @click="item.action($event, model.form)"
+                    >{{item.label}}</button>
+                    <span
+                        v-if="item.type === `text` && item.condition"
+                        :class="item.classes"
+                        v-html="item.label"
+                        @click="item.action($event, model.form)"
+                    ></span>
+                </div>
             </div>
-            <div
-                class="pl-4"
-                v-if="existing && !updateOnly"
-            >
-                <button
-                    class="btn btn-danger"
-                    @click="del($event)"
-                >Delete</button>
-            </div>
-            <div
-                class="pl-4 color-primary"
-                v-if="confirmed && existing && !updateOnly"
-            >
-                <span>
-                    <font-awesome-icon icon="check-circle"></font-awesome-icon>&nbsp;Verified
-                </span>
-            </div>
-            <div
-                class="pl-4"
-                v-if="!confirmed && existing && !updateOnly && canSMSVerify"
-            >
-                <button
-                    class="btn btn-primary"
-                    @click="verify($event)"
-                >Verify SMS</button>
-            </div>
-            <div
-                class="fpl-4 color-red"
-                v-if="!confirmed && existing && !updateOnly"
-            >
-                <span class="pl-4">
-                    <font-awesome-icon icon="times-circle"></font-awesome-icon>&nbsp;Not verified
-                </span>
+            <div class="d-flex align-items-center justify-content-end">
+                <div
+                    v-for="(item, index) in rightButtons"
+                    :key="index"
+                    class="pl-2 form-button"
+                    :class="item.position"
+                >
+                    <button
+                        v-if="item.type === `button` && item.condition"
+                        class="btn"
+                        :class="item.classes"
+                        @click="item.action($event, model.form)"
+                    >{{item.label}}</button>
+                    <span
+                        v-if="item.type === `text` && item.condition"
+                        :class="item.classes"
+                        v-html="item.label"
+                        @click="item.action($event, model.form)"
+                    ></span>
+                </div>
             </div>
         </div>
     </form>

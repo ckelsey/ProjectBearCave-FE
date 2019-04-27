@@ -51,7 +51,6 @@ export default class ContentSection extends Vue {
 
     public mounted() {
         const duration = 500
-        const wipe = this.$refs.wipe as HTMLElement
         const maxHeight = () => window.innerHeight
 
         const el = this.$el as HTMLElement

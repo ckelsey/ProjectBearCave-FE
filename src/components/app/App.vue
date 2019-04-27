@@ -6,7 +6,7 @@
                 <!-- <about-us v-if="state.state==='about'"></about-us>
                 <support-section v-if="state.state==='support'"></support-section> -->
                 <content-section
-                    :show="showHome$"
+                    :show="routes.home$"
                     setmax="true"
                 >
                     <div class="d-flex align-items-center justify-content-center">
@@ -19,23 +19,46 @@
                         </div>
                     </div>
                 </content-section>
+
                 <content-section
-                    :show="showLoginRegister$"
+                    :show="routes.login$"
                     setmax="true"
                 >
                     <login-form></login-form>
                 </content-section>
+
                 <content-section
-                    :show="showProfile$"
+                    :show="routes.profile$"
                     setmax="true"
                 >
                     <profile-dashboard></profile-dashboard>
                 </content-section>
                 <content-section
-                    :show="showTerms$"
+                    :show="routes.termsModal$"
                     setmax="true"
                 >
                     <terms-service></terms-service>
+                </content-section>
+
+                <content-section
+                    :show="routes.terms$"
+                    setmax="true"
+                >
+                    <terms-conditions></terms-conditions>
+                </content-section>
+
+                <content-section
+                    :show="routes.agreement$"
+                    setmax="true"
+                >
+                    <user-agreement></user-agreement>
+                </content-section>
+
+                <content-section
+                    :show="routes.privacy$"
+                    setmax="true"
+                >
+                    <privacy-policy></privacy-policy>
                 </content-section>
 
                 <alert-message
@@ -91,7 +114,7 @@ html {
             border-radius: 1px;
             border: none !important;
             white-space: nowrap;
-            transition: all 0.1s;
+            transition: all 0.4s;
         }
 
         .btn-danger {
@@ -146,6 +169,45 @@ html {
 
             &:hover {
                 color: $dark-color;
+            }
+        }
+
+        .btn-text {
+            background-color: transparent;
+            color: inherit;
+            box-shadow: none;
+
+            &.btn-primary {
+                color: $primary-color;
+            }
+
+            &.btn-secondary {
+                color: $highlight-color;
+            }
+
+            &.btn-danger {
+                color: $red;
+            }
+        }
+
+        .btn-text:hover,
+        .btn-text:focus,
+        .btn-text:active,
+        .btn-text:not(:disabled):not(.disabled):active {
+            background-color: transparent;
+            color: inherit;
+            box-shadow: none;
+
+            &.btn-primary {
+                color: $dark-color;
+            }
+
+            &.btn-secondary {
+                color: $highlight-dark-color;
+            }
+
+            &.btn-danger {
+                color: darken($red, 10);
             }
         }
 
@@ -436,7 +498,7 @@ html {
             color: $dark-color;
         }
 
-        .color-red {
+        .color-danger {
             color: $red;
         }
 
@@ -482,6 +544,19 @@ html {
 
         .has-clarence {
             padding-bottom: 75px;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-weight: bold;
+        }
+
+        h1 {
+            margin-bottom: 2rem;
         }
 
         h2 {
@@ -535,6 +610,62 @@ html {
                     }
                 }
             }
+        }
+
+        .close-before {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            &:before {
+                content: "\00D7";
+                display: block;
+                width: 1rem;
+                height: 1rem;
+                line-height: 1rem;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: currentColor;
+                font-weight: bold;
+                font-size: 22px;
+                margin-right: 0.25rem;
+                line-height: 22px;
+                font-family: sans-serif;
+                margin-top: -4px;
+            }
+        }
+
+        .checkmark-before {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:before {
+                content: "\2713";
+                display: block;
+                width: 1rem;
+                height: 1rem;
+                line-height: 1rem;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: currentColor;
+                font-weight: bold;
+                font-size: 17px;
+                margin-right: 0.25rem;
+                line-height: 17px;
+                font-family: sans-serif;
+            }
+        }
+
+        .pointer {
+            cursor: pointer;
+        }
+
+        .form-button:empty {
+            display: none;
         }
     }
 

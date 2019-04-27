@@ -12,18 +12,23 @@
                     class="existing-form"
                     v-if="formData.existingForms.length"
                 >
-                    <form-element
-                        v-for="(obj, $index) in formData.existingForms"
-                        :key="$index"
-                        :model="obj"
-                        :confirmed="obj.model.SMSVerification === 1 || obj.model.confirmed === 1"
-                        :existing="true"
-                        :updateOnly="formData.updateOnly"
-                        :submission="formSubmit"
-                        :deletion="formDelete"
-                        :verification="formVerify"
-                    >
-                    </form-element>
+                    <div v-if="modelkey === `account`">
+                        <form-element :model="formData.existingForms[0]"></form-element>
+                    </div>
+
+                    <div v-if="modelkey !== `account`">
+                        <collapse-element
+                            v-for="(obj, $index) in formData.existingForms"
+                            :key="$index"
+                        >
+                            <template v-slot:toggle>
+                                <div>{{obj.heading}}</div>
+                            </template>
+                            <template v-slot:content>
+                                <form-element :model="obj"></form-element>
+                            </template>
+                        </collapse-element>
+                    </div>
                 </div>
                 <div
                     class="new-form"
@@ -33,9 +38,6 @@
                         v-for="(obj, $index) in formData.newForm"
                         :key="$index"
                         :model="obj"
-                        :confirmed="false"
-                        :existing="false"
-                        :submission="formSubmit"
                     >
                     </form-element>
                 </div>
@@ -48,4 +50,14 @@
 
 <style lang="scss">
 @import "../../global.scss";
+
+.profile-content-section {
+    .collapse-element {
+        margin: 1rem 0px;
+
+        .form-element {
+            margin: -2px 0px 0px;
+        }
+    }
+}
 </style>

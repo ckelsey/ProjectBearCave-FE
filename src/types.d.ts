@@ -69,7 +69,7 @@ export interface UserModel {
     email: string
     password: string
     claimcount: number
-    client_YN: number
+    clientYN: number
     token: string
     refreshToken: string
     phoneNumbers: PhoneModel[]

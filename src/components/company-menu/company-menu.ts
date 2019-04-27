@@ -18,15 +18,9 @@ export default class CompanyMenu extends Vue {
         return this.$refs.panelToggler
     }
 
-    public goToAbout(e: Event) {
+    public goTo(e: Event, val: string) {
         e.preventDefault()
-        this.state.state = `about`
-        this.$panel.toggle()
-    }
-
-    public goToSupport(e: Event) {
-        e.preventDefault()
-        this.state.state = `support`
+        this.state.state = val
         this.$panel.toggle()
     }
 

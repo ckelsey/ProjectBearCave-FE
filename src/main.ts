@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import App from './components/app/App.vue'
+import App from './components/app/app'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { library } from '@fortawesome/fontawesome-svg-core'

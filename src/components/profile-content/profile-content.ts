@@ -2,14 +2,16 @@ import { Component, Vue, Prop } from 'vue-property-decorator'
 import user from '@/services/user'
 import FormElement from '../form-element/form-element'
 import ContentSection from '../content-section/content-section'
-import state from '@/services/state';
+import state from '@/services/state'
 import { UserForm } from '@/services/user-forms'
-import translate from '@/services/translate';
+import translate from '@/services/translate'
+import CollapseElement from '../collapse-element/collapse-element'
 
 @Component({
     components: {
         'form-element': FormElement,
-        'content-section': ContentSection
+        'content-section': ContentSection,
+        'collapse-element': CollapseElement
     }
 })
 export default class ProfileContent extends Vue {
@@ -25,7 +27,7 @@ export default class ProfileContent extends Vue {
 
     public formData: any = {
         existingForms: [],
-        newForm: [],
+        newForm: []
     }
 
     public formUpdateSuccess() {
@@ -43,29 +45,6 @@ export default class ProfileContent extends Vue {
             active: true,
             status: `alert-danger`
         }
-    }
-
-    public formDelete(data: any) {
-
-        return this.user.deleteData(data, this.modelkey)
-            .then(this.formUpdateSuccess)
-            .catch(this.formUpdateError)
-    }
-
-    public formVerify(data: any) {
-        return this.user.verifyPhone(data)
-    }
-
-    public formSubmit(data: any) {
-        if (this.modelkey === `account`) {
-            return this.user.update(data)
-                .then(this.formUpdateSuccess)
-                .catch(this.formUpdateError)
-        }
-
-        return this.user.updateData(data, this.modelkey)
-            .then(this.formUpdateSuccess)
-            .catch(this.formUpdateError)
     }
 
     public mounted() {

@@ -20,5 +20,4 @@
         </div>
     </div>
 </template>
-<script lang="ts" src="./index.ts"></script>
-<style lang="scss"></style>
+<script lang="ts" src="./modal-content.ts"></script>

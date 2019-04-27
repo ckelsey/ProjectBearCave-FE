@@ -5,7 +5,7 @@ import ClarenceFormHelper from '../clarence-form-helper'
 import ProfileHeader from '../profile-header'
 import ProfileTabs from '../profile-tabs'
 import ProfileContent from '../profile-content/profile-content'
-import ModalContent from '../modal-content'
+import ModalContent from '../modal-content/modal-content'
 
 @Component({
     components: {

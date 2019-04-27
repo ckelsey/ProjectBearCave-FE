@@ -99,7 +99,7 @@
                             >
                             <label for="agentConsent">
                                 <span>
-                                    <span class="checkbox-label">Allow Class Action Inc to be your agent<span class="label-error">{{consent.agent.error}}</span></span>
+                                    <span class="checkbox-label">Allow {{constants.companyName}} to be your agent<span class="label-error">{{consent.agent.error}}</span></span>
                                     <span class="checkbox-message">
                                         An 'agent' is someone who works on your behalf.
                                         In this context, it lets me file your claims,
@@ -120,7 +120,7 @@
                             >
                             <label for="assigneeConsent">
                                 <span>
-                                    <span class="checkbox-label">Allow Class Action Inc to be your assignee<span class="label-error">{{consent.assignee.error}}</span></span>
+                                    <span class="checkbox-label">Allow {{constants.companyName}} to be your assignee<span class="label-error">{{consent.assignee.error}}</span></span>
                                     <span class="checkbox-message">
                                         An 'assignee' is someone you designate to receive something.
                                         In this case, it gives my creators the legal right to

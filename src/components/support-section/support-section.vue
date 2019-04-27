@@ -18,5 +18,3 @@
 </template>
 
 <script lang="ts" src="./support-section.ts"></script>
-
-<style lang="scss"></style>

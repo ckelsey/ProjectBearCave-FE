@@ -1,10 +1,12 @@
 import { Component, Vue } from 'vue-property-decorator'
 import user from '@/services/user'
+import constants from '@/services/constants'
 
 @Component({
     components: {}
 })
 export default class TermsService extends Vue {
+    public constants = constants
     public user = user
     public consent = {
         agent: {
