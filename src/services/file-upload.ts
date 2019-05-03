@@ -1,35 +1,30 @@
-// https://github.com/ckelsey/nvidia_upload/blob/master/src/uploader.js
+import constants from './constants'
+import user from './user/user'
+import Subject from '@/utils/subject'
 
-class FileUploader {
-    /** @desc The url to upload to */
-    public uploadUrl: string | string[] = ``
+const bytesPerChunk = 647212
+
+export const FileUpload$ = new Subject({})
+
+export class FileUploader {
+    public state$ = new Subject({
+        error: null,
+        progress: 0,
+    })
 
     /** @desc The url to upload to */
-    public authUrl: string = ``
+    public uploadUrls: Array<{ url: string, expires: number }> = []
+
+    public uploadedUrls: string[] = []
 
     /** @desc The file to upload */
     public file: File
-
-    /** @desc The current user id */
-    public userId: string
-
-    /** @desc The current user token */
-    public userToken: string
-
-    /** @desc Progress callback */
-    public progressCB: (progress: number) => any
-
-    /** @desc How big to break up the chunks */
-    public bytesPerChunk = 647212
 
     /** @desc If upload has been canceled */
     public stop = false
 
     /** @desc Number of chunks */
     public total: number = 0
-
-    /** @desc The current chunk to upload */
-    public chunkIndex: number = 0
 
     /** @desc Extension of the image */
     public ext: string = ``
@@ -46,50 +41,24 @@ class FileUploader {
     /** @desc Upload web worker function string */
     public uploadWorker = `
         (function(c){let e=function(){this.boundary="----WebKitFormBoundary"+Math.random().toString(36).slice(2);this.type="multipart/form-data; boundary="+this.boundary;this.crlf="\\r\\n";this.pairs=[]};e.prototype.append=function(b,a){let c=Object.prototype.toString.call(a),f=function(a){return a.replace(/\\r/g,"%0D").replace(/\\n/g,"%0A").replace(/"/g,"%22")},d={disposition:'form-data; name="'+f(b||"")+'"'};b&&("[object File]"===c||"[object Blob]"===c?(d.disposition+='; filename="'+f(a.name||"blob")+'"',d.type=a.type||"application/octet-stream",d.value=a):d.value=String(a),this.pairs.push(d))};e.prototype.getBlob=function(){let b=[],a,e=this.pairs.length;for(a=0;a<e;a++)b.push("--"+this.boundary+this.crlf+"Content-Disposition: "+this.pairs[a].disposition),this.pairs[a].type&&b.push(this.crlf+"Content-Type: "+this.pairs[a].type),b.push(this.crlf+this.crlf),b.push(this.pairs[a].value),b.push(this.crlf);b.push("--"+this.boundary+"--"+this.crlf);return c.Blob?new Blob(b):(new c.FileReaderSync).readAsArrayBuffer(function(a){let b=new (c.BlobBuilder||c.WebKitBlobBuilder||c.MSBlobBuilder);(a||[]).forEach(function(a){b.append(a)});return b.getBlob()}(b))};c.FormDataBuilder=e})(this);
-
         self.onmessage = function (e) {
-
             try{
-                let data = e.data;
-                let form = new FormDataBuilder();
-
-                form.append("shipmentfile", data.chunk);
-
-                if(data.thumb){
-                    form.append("thumbnail", data.thumb);
-                }
-
-                let x = new XMLHttpRequest();
-                x.open("POST", data.url, true);
-                x.withCredentials = "true";
-
-                if (form.type) {
-                    x.setRequestHeader("Content-Type", form.type);
-                }
-
-                x.onloadend = function(res){
-                    self.postMessage(x.response);
-                }
-
-                let dataToSend = form
-
-                if(form.getBlob && typeof form.getBlob === 'function'){
-                    dataToSend = form.getBlob()
-                }
-
-                x.send(dataToSend);
+                const data = e.data;
+                const form = new FormData();
+                form.append('file', data.chunk)
+                const x = new XMLHttpRequest();
+                x.open("PUT", data.url, true);
+                x.setRequestHeader('Content-type', 'application/octet-stream');
+                x.onload = function(res){ self.postMessage('success'); }
+                x.onerror = function(res){ self.postMessage('error'); }
+                x.send(form);
             }catch(e){
                 self.postMessage(e);
             }
         }`
 
-    constructor(file: File, userId: string, userToken: string, progressCB: (progress: number) => any, authUrl: string = ``, uploadUrl: string = ``) {
-        this.uploadUrl = uploadUrl
-        this.authUrl = authUrl
+    constructor(file: File) {
         this.file = file
-        this.userId = userId
-        this.userToken = userToken
-        this.progressCB = progressCB
     }
 
     /**
@@ -99,122 +68,90 @@ class FileUploader {
     public setProgress(index: number) {
         let progress = !index ? 0 : Math.ceil((index / this.total) * 100)
 
-        if (progress > 100) {
-            progress = 100
-        }
+        if (progress > 100) { progress = 100 }
 
-        if (typeof this.progressCB === `function`) {
-            this.progressCB(progress)
-        }
+        return this.state$.next(
+            Object.assign({}, this.state$.value, { progress })
+        )
     }
 
     /** @desc Gets the translated error message */
     public error(msg?: string) {
-        return msg && msg !== `` ? msg : `Error uploading image, please refresh the page and try again`
-    }
-
-    /**
-     * @desc Called after a chunk upload, handles response
-     * @param e - Upload web worker event
-     */
-    public onChunkUploaded(e: any): Promise<string> {
-
-        // If no event, reject
-        if (!e || e.data === ``) {
-            return Promise.reject(this.error())
-        }
-
-        let data: any = {}
-
-        // try to parse the event data
-        try {
-            data = JSON.parse(e.data) as any
-            // tslint:disable-next-line:no-empty
-        } catch (error) { }
-
-        if (data.hasOwnProperty(`errorMessage`)) {
-            return Promise.reject(this.error(data.errorMessage))
-        }
-
-        // increment current chunk index
-        this.chunkIndex = this.chunkIndex + 1
-
-        // update progress
-        this.setProgress(this.chunkIndex)
-
-        // if more chunks to upload
-        if (this.chunkIndex <= this.total) {
-
-            return this.uploadChunk(this.chunkIndex)
-
-        } else {
-
-            // if done, return the url in the response data
-            return Promise.resolve(data.result.url)
-        }
+        return this.state$.next(
+            Object.assign({}, this.state$.value,
+                { error: msg && msg !== `` ? msg : `Error during upload, please try again` }
+            )
+        )
     }
 
     /**
      * @desc Handles the upload request
      * @param index - The current chunk to upload
      */
-    public uploadChunk(index: number): Promise<string> {
-        return new Promise((resolve, reject) => {
-            // If upload has been canceled, resolve
-            if (this.stop) {
-                return resolve()
-            }
+    public uploadChunk(index: number) {
+        if (this.stop) { return }
 
-            const url = Array.isArray(this.uploadUrl) ? this.uploadUrl[index] : this.uploadUrl
+        const urlData: any = this.uploadUrls[index]
+        const expires = urlData.expires
+        let url = urlData.url
 
-            if (typeof url !== `string`) {
-                return reject(`invalid upload url`)
-            }
+        const done = () => {
+            this.uploadedUrls.push(url.split(`?`)[0])
+            this.setProgress(index + 1)
 
+            if (index + 1 === this.total) { return }
+
+            return this.uploadChunk(index + 1)
+        }
+
+        const run = () => {
             // setup request data
             const data = {
-                chunk: this.file.slice(index * this.bytesPerChunk, (index + 1) * this.bytesPerChunk),
-                url: url + '?userid=' + this.userId +
-                    '&token=' + this.userToken +
-                    '&shipmenttotalparts=' + this.total +
-                    '&shipmentpartindex=' + this.chunkIndex +
-                    '&shipmentuuid=' + this.uploadId +
-                    '&shipmentfilename=' + this.file.name +
-                    '&done=' + (this.total === this.chunkIndex ? 1 : 0)
+                chunk: this.file.slice(index * bytesPerChunk, (index + 1) * bytesPerChunk),
+                url
             }
 
             // if IE 11, don't use web worker
             if ((window as any).MSInputMethodContext) {
                 const form = new FormData()
-                form.append(`shipmentfile`, data.chunk)
+                form.append('file', data.chunk)
                 const x = new XMLHttpRequest()
-                x.open(`POST`, data.url, true)
-                x.withCredentials = true
-                // if (form.type) { x.setRequestHeader(`Content-Type`, form.type) }
-                x.onload = () => {
-                    return this.onChunkUploaded({ data: x.response })
-                        .then(res => resolve(res))
-                        .catch(res => reject(res))
-                }
-                x.onerror = () => { reject() }
-                // x.send(form.getBlob ? form.getBlob() : form)
-                x.send(form)
+                x.open(`PUT`, data.url, true)
+                x.onload = () => done()
+                x.onerror = () => this.error()
+                x.send(form);
             } else {
                 // create web worker
                 const workerBlob = new window.Blob([this.uploadWorker], { type: `text/javascript` })
-                const worker = new Worker(window.URL.createObjectURL(workerBlob))
+                const workerUrl = window.URL.createObjectURL(workerBlob)
+                const worker = new Worker(workerUrl)
 
                 // when worker is done
                 worker.onmessage = (e) => {
-                    return this.onChunkUploaded(e)
-                        .then(res => resolve(res))
-                        .catch(res => reject(res))
+                    window.URL.revokeObjectURL(workerUrl)
+                    if (e.data === `error`) { return this.error() }
+                    return done()
                 }
 
                 // start worker
                 worker.postMessage(data)
             }
-        })
+        }
+
+        if (expires < new Date().getTime()) {
+            return this.getSignedUrls(index)
+                .then(() => {
+                    url = this.uploadUrls[index].url
+                    return run()
+                })
+                .catch(this.error)
+        }
+
+        if (typeof url !== `string`) {
+            return this.error(`invalid upload url`)
+        }
+
+        return run()
     }
 
     /** @desc cancel upload */
@@ -222,123 +159,143 @@ class FileUploader {
         this.stop = true
     }
 
-    public doAuth() {
-        return new Promise((resolve, reject) => {
+    public getSignedUrls(index: number) {
+        return new Promise((resolve) => {
             const authWorker = `
                 self.onmessage = function (e) {
-                    let data = e.data;
-
-                    let x = new XMLHttpRequest();
-                    x.open("POST", data.url, true);
-                    x.withCredentials = "true";
+                    const x = new XMLHttpRequest();
+                    x.open("POST", e.data.url, true);
                     x.setRequestHeader("Content-Type", "application/JSON");
-
-                    x.onloadend = function(res){
-                        self.postMessage(x.response);
-                    }
-
-                    x.send(data.data);
+                    x.onloadend = function(res){ self.postMessage(x.response); }
+                    x.send(e.data.data);
                 }`
 
             const workerBlob = new window.Blob([authWorker], { type: `text/javascript` })
-            const worker = new Worker(window.URL.createObjectURL(workerBlob))
+            const workerUrl = window.URL.createObjectURL(workerBlob)
+            const worker = new Worker(workerUrl)
 
             // when worker is done
             worker.onmessage = (e) => {
-                // If no event, reject
+                window.URL.revokeObjectURL(workerUrl)
+
                 if (!e || e.data === ``) {
-                    return reject(this.error())
+                    return this.error()
                 }
 
-                let data: any = {}
+                let data: any
 
-                // try to parse the event data
                 try {
                     data = JSON.parse(e.data) as any
-                    // tslint:disable-next-line:no-empty
-                } catch (error) { }
-
-                if (data.hasOwnProperty(`errorMessage`)) {
-                    return reject(this.error(data.errorMessage))
+                } catch (error) {
+                    return this.error()
                 }
 
-                if (data.urls) {
-                    this.uploadUrl = data.urls
+                if (!data || !Array.isArray(data)) {
+                    return this.error()
                 }
 
-                return resolve(this.start)
+                this.uploadUrls = this.uploadUrls.slice(0, index - 1).concat(data)
+
+                return resolve()
             }
 
             // start worker
             worker.postMessage({
-                url: this.authUrl,
-                data: {
-                    userId: this.userId,
-                    userToken: this.userToken,
-                    total: this.total
-                }
+                url: constants.apiUploadAuth,
+                data: JSON.stringify({
+                    userId: user.model$.value.id,
+                    userToken: user.model$.value.token,
+                    total: this.total - index,
+                    mime: this.mime
+                })
             })
         })
     }
 
     public start() {
-        return new Promise((resolve, reject) => {
-            this.setProgress(this.chunkIndex)
+        this.setProgress(0)
+        this.uploadChunk(0)
+    }
 
-            // Upload first chunk
-            return this.uploadChunk(this.chunkIndex)
-                .then(res => {
+    public stitch() {
+        const stitchWorker = `
+        self.onmessage = function (e) {
+            const x = new XMLHttpRequest();
+            x.open("POST", e.data.url, true);
+            x.setRequestHeader("Content-Type", "application/JSON");
+            x.onloadend = function(res){ self.postMessage(x.response); }
+            x.send(e.data.data);
+        }`
 
-                    if (res) {
-                        // last chunk response has a url
-                        return resolve(res)
-                    } else if (!res && this.stop) {
-                        // upload was canceled
-                        return resolve()
-                    } else {
-                        return reject(res || `An error occured`)
-                    }
-                })
-                .catch(res => {
-                    return reject(res)
-                })
+        const workerBlob = new window.Blob([stitchWorker], { type: `text/javascript` })
+        const workerUrl = window.URL.createObjectURL(workerBlob)
+        const worker = new Worker(workerUrl)
+
+        worker.onmessage = (e) => {
+            window.URL.revokeObjectURL(workerUrl)
+
+            if (!e || e.data === ``) {
+                return this.error()
+            }
+
+            this.state$.next(
+                Object.assign({}, this.state$.value, { url: e.data })
+            )
+        }
+
+        // start worker
+        worker.postMessage({
+            url: constants.apiUploadStitch,
+            data: JSON.stringify({
+                userId: user.model$.value.id,
+                userToken: user.model$.value.token,
+                files: this.uploadedUrls,
+                ext: this.ext
+            })
         })
     }
 
     /** @desc Start the upload flow */
-    public upload(): Promise<string> {
-        return new Promise((resolve, reject) => {
-            if (!this.file || !this.userId || !this.userToken) {
-                return reject(`invalid data`)
+    public upload() {
+        if (!this.file || !user.model$.value.id || !user.model$.value.token) {
+            return this.state$.next({ error: `invalid data` })
+        }
+
+        FileUpload$.subscribe((val) => {
+            if (val.cancel) {
+                this.state$.next({ cancel: true })
             }
-
-            // settings
-            this.size = this.file.size
-            this.total = Math.ceil(this.size / this.bytesPerChunk)
-            this.chunkIndex = 0
-            this.uploadId = `${new Date().getTime()}${Math.round(Math.random() * 1000)}${this.size}${this.total}`
-            this.mime = this.file.type
-            this.ext = this.mime === `image/jpeg` ? `jpg` : `png`
-
-            if (this.authUrl !== ``) {
-                return this.doAuth()
-                    .then((res) => {
-                        return resolve(res as any)
-                    })
-                    .catch((res) => {
-                        return reject(res as any)
-                    })
-            }
-
-            return this.start()
-                .then((res) => {
-                    return resolve(res as any)
-                })
-                .catch((res) => {
-                    return reject(res as any)
-                })
         })
+
+        // settings
+        this.total = Math.ceil(this.file.size / bytesPerChunk)
+        this.mime = this.file.type
+        this.ext = this.file.name.split(`.`).pop() as string
+
+        const state = this.state$.subscribe((val) => {
+            if (!val.cancel) {
+                FileUpload$.next(val)
+            }
+
+            if (val.error) {
+                return state()
+            }
+
+            if (val.cancel) {
+                this.cancel()
+                return state()
+            }
+
+            if (val.url) {
+                return state()
+            }
+
+            if (val.progress === 100) {
+                this.stitch()
+            }
+        })
+
+        return this.getSignedUrls(0)
+            .then(() => this.start())
     }
 }
-
-export default FileUploader

@@ -2,16 +2,26 @@
 
 ## TODO
 
--   user profile progress
--   translation service
+- breadcrumbs for profile
+- new form button on right of breadcrumb
+- list items as links that slide and propagate breadcrumb
+- scrollbar flash on slide vertical element transition, esp account form to any other form
 
+- pretty graph
+- hover for transaction data points on graph
 
+- collapsible history list
 
+- pay to forms
+- transfer form
 
+- get faq's
 
+- file upload
+
+- smoother animations
 
 -   phone issues
-
     -   number should be returned with country code?
     -   number shouldn't be formatted?
     -   start/end date isn't returned?
@@ -23,7 +33,6 @@
     -   how do you want dates? timestamp?
 
 -   address issues
-
     -   response is [{"address":[]}] ?
     -   how do you want dates? timestamp?
     -   should we split up the address from one string to different fields so we won't need to parse?
@@ -31,7 +40,6 @@
     -   consistency with id/\_id/user_id
     -   put doesn't return anything
 
--   make phone numbers, addresses, employment, etc expand/collapsible
 -   loader for requests
 -   form submissions to trigger browser autocomplete saves
 -   text input to have manual autocomplete list for phone carrier(js list if can't do)
@@ -41,7 +49,5 @@
 -   ticket form validation
 -   faq's
 -   map on about us
--   footer
 -   reactive inputs with clarence
--   welcome section
 -   GET REFRESH token PATH

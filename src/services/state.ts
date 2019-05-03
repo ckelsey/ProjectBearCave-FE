@@ -1,5 +1,5 @@
 import Subject from '@/utils/subject'
-import routes from './routes'
+import routes from './routes/routes'
 
 class State {
     public timer: any

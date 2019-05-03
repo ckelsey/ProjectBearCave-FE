@@ -1,0 +1,41 @@
+<template>
+    <div class="account-menu">
+        <div v-show="userReady">
+            <button
+                v-if="!loggedIn"
+                ref="signin"
+                class="btn btn-primary"
+                @click="state.state = `login`"
+            >Sign in</button>
+            <div v-if="loggedIn" class="d-flex justify-content-end">
+                <button
+                    class="account btn btn-link d-inline-flex align-items-center icon-lg"
+                    ref="panelToggler"
+                >
+                    <font-awesome-icon icon="user-circle"/>
+                </button>
+                <span class="badge-element">{{claimCount}}</span>
+                <side-panel direction="right" ref="panel" v-bind:toggler="getPanelToggler">
+                    <a
+                        v-for="item in menu"
+                        :key="item"
+                        class="list-item"
+                        :class="state.state === item ? `highlight` : `` "
+                        href="/profile"
+                        @click="goTo($event, item)"
+                    >{{item}}</a>
+                    <a class="list-item" href="/" @click="logout($event)">Logout</a>
+                </side-panel>
+            </div>
+        </div>
+    </div>
+</template>
+<script lang="ts" src="./account-menu.ts"></script>
+<style lang="scss">
+.account-menu {
+    .list-item {
+        text-transform: capitalize;
+    }
+}
+</style>
+

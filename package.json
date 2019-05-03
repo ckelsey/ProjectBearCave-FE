@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@types/animejs": "^2.0.2",
+    "@types/node": "^11.13.8",
     "@vue/cli-plugin-babel": "^3.5.0",
     "@vue/cli-plugin-typescript": "^3.5.0",
     "@vue/cli-service": "^3.5.0",

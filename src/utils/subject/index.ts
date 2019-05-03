@@ -44,6 +44,8 @@ class Subject extends Subscription implements SubjectObject {
     }
 
     public subscribe(next: ObserverNext, error?: ObserverError, complete?: ObserverComplete): () => Subscriptions {
+        if (this.value !== undefined) { next(this.value) }
+
         return super._subscribe(next, error, complete)
     }
 }

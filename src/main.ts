@@ -6,14 +6,16 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import {
     faCoffee, faBars, faUserCircle, faAt, faKey, faChevronRight,
     faAddressCard, faArrowAltCircleLeft, faArrowLeft, faHammer, faCar,
-    faPhone, faCheckCircle, faTimesCircle, faTimes, faHome
+    faPhone, faCheckCircle, faTimesCircle, faTimes, faHome, faListUl,
+    faEdit, faCheckSquare, faChevronLeft, faPlus, faBriefcase
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 library.add(
     faCoffee, faBars, faUserCircle, faAt, faKey, faChevronRight,
     faAddressCard, faArrowAltCircleLeft, faArrowLeft, faHammer,
-    faCar, faPhone, faCheckCircle, faTimesCircle, faTimes, faHome
+    faCar, faPhone, faCheckCircle, faTimesCircle, faTimes, faHome,
+    faListUl, faEdit, faCheckSquare, faChevronLeft, faPlus, faBriefcase
 )
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)

@@ -3,63 +3,57 @@
         <nav-bar></nav-bar>
         <div class="app-content">
             <div id="app-content-inner">
-                <!-- <about-us v-if="state.state==='about'"></about-us>
-                <support-section v-if="state.state==='support'"></support-section> -->
-                <content-section
-                    :show="routes.home$"
-                    setmax="true"
-                >
-                    <div class="d-flex align-items-center justify-content-center">
-                        <div>
-                            <h1>HOME</h1>
-                            <h1>HOME</h1>
-                            <h1>HOME</h1>
-                            <h1>HOME</h1>
-                            <h1>HOME</h1>
-                        </div>
-                    </div>
-                </content-section>
+                <page-content :show="routes.home$">
+                    <home-page></home-page>
+                </page-content>
 
-                <content-section
-                    :show="routes.login$"
-                    setmax="true"
-                >
-                    <login-form></login-form>
-                </content-section>
+                <page-content :show="routes.about$">
+                    <about-page></about-page>
+                </page-content>
 
-                <content-section
-                    :show="routes.profile$"
-                    setmax="true"
-                >
-                    <profile-dashboard></profile-dashboard>
-                </content-section>
-                <content-section
-                    :show="routes.termsModal$"
-                    setmax="true"
-                >
-                    <terms-service></terms-service>
-                </content-section>
+                <page-content :show="routes.support$">
+                    <support-page></support-page>
+                </page-content>
 
-                <content-section
-                    :show="routes.terms$"
-                    setmax="true"
-                >
-                    <terms-conditions></terms-conditions>
-                </content-section>
+                <page-content :show="routes.login$">
+                    <login-page></login-page>
+                </page-content>
 
-                <content-section
-                    :show="routes.agreement$"
-                    setmax="true"
-                >
-                    <user-agreement></user-agreement>
-                </content-section>
+                <page-content :show="routes.register$">
+                    <register-page></register-page>
+                </page-content>
 
-                <content-section
-                    :show="routes.privacy$"
-                    setmax="true"
-                >
-                    <privacy-policy></privacy-policy>
-                </content-section>
+                <page-content :show="routes.terms$">
+                    <terms-page></terms-page>
+                </page-content>
+
+                <page-content :show="routes.agreement$">
+                    <agreement-page></agreement-page>
+                </page-content>
+
+                <page-content :show="routes.privacy$">
+                    <privacy-page></privacy-page>
+                </page-content>
+
+                <page-content :show="routes.profile$">
+                    <profile-page></profile-page>
+                </page-content>
+
+                <page-content :show="routes.wallet$">
+                    <wallet-page></wallet-page>
+                </page-content>
+
+                <page-content :show="routes.claims$">
+                    <claims-page></claims-page>
+                </page-content>
+
+                <page-content :show="routes.discovery$">
+                    <discovery-page></discovery-page>
+                </page-content>
+
+                <page-content :show="routes.termsModal$">
+                    <terms-form></terms-form>
+                </page-content>
 
                 <alert-message
                     :active="state.alert.active"
@@ -68,20 +62,22 @@
                     :close="state.closeAlert"
                 ></alert-message>
 
-                <modal-content
-                    id="file-upload-progress"
-                    ref="uploadProgress"
-                >
-                    <div class="d-flex align-items-center justify-content-center flex-column upload-progress-modal">
+                <modal-content id="file-upload-progress" ref="uploadProgress">
+                    <div
+                        class="d-flex align-items-center justify-content-center flex-column upload-progress-modal"
+                    >
                         <h4>Upload progress</h4>
                         <div class="upload-progress-bar-container">
                             <div
                                 class="upload-progress-bar"
-                                :style="{width:`${uploader.progressAmount}%`}"
+                                :style="{width:`${uploadProgressAmount}%`}"
                             ></div>
                         </div>
                         <div class="upload-progress-text-container">
-                            <div class="upload-progress-text">{{uploader}}%</div>
+                            <div class="upload-progress-text">{{uploadProgressAmount}}%</div>
+                        </div>
+                        <div class="d-flex justify-content-center w-100 mt-4">
+                            <button class="btn btn-secondary" @click="cancelUpload">Cancel</button>
                         </div>
                     </div>
                 </modal-content>
@@ -93,7 +89,7 @@
 <script lang="ts" src="./app.ts"></script>
 
 <style lang="scss">
-@import "../../global.scss";
+@import "@/global/global.scss";
 
 html {
     height: 100%;
@@ -106,8 +102,30 @@ html {
         font-size: 1rem;
         box-sizing: border-box;
         overflow: hidden;
+        color: $dark-color;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+
+        &.slide-right,
+        &.slide-left {
+            #app-content-inner {
+                opacity: 0.1;
+                transition: opacity 0.2s ease-in-out, filter 0.2s ease-in-out,
+                    left 0.2s ease-in-out;
+            }
+        }
+
+        &.slide-right {
+            #app-content-inner {
+                left: -2rem;
+            }
+        }
+
+        &.slide-left {
+            #app-content-inner {
+                left: 2rem;
+            }
+        }
 
         .btn {
             cursor: pointer;
@@ -115,99 +133,113 @@ html {
             border: none !important;
             white-space: nowrap;
             transition: all 0.4s;
-        }
 
-        .btn-danger {
-            background-color: $red;
-            box-shadow: $liftedShadowLight;
+            &.btn-circle {
+                border-radius: 50% !important;
+                position: relative;
+                padding: 0.5rem;
 
-            &:hover,
-            &:active,
-            &:focus,
-            &:not(:disabled):not(.disabled):active:focus {
-                background-color: lighten($red, $amount: 10);
-                box-shadow: none;
-                // font-size: 1.125rem;
-                // margin: -0.2rem;
+                .btn-circle-inner {
+                    height: 0px;
+                    padding: 50% 0rem;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
             }
-        }
 
-        .btn-primary {
-            background-color: $primary-color;
-            box-shadow: none;
-            // box-shadow: $liftedShadowLight;
+            &.btn-danger {
+                background-color: $red;
+                box-shadow: $liftedShadowLight;
 
-            &:hover,
-            &:active,
-            &:focus,
-            &:not(:disabled):not(.disabled):active:focus {
-                background-color: $dark-color;
-                box-shadow: none;
-                // box-shadow: $liftedShadowDark;
-                // font-size: 1.125rem;
-                // margin: -0.2rem;
+                &:hover,
+                &:active,
+                &:focus,
+                &:not(:disabled):not(.disabled):active:focus {
+                    background-color: lighten($red, $amount: 10);
+                    box-shadow: none;
+                    // font-size: 1.125rem;
+                    // margin: -0.2rem;
+                }
             }
-        }
-
-        .btn-secondary {
-            background-color: $highlight-color;
-            box-shadow: $liftedShadowLight;
-
-            &:hover,
-            &:active,
-            &:focus,
-            &:not(:disabled):not(.disabled):active:focus {
-                background-color: $highlight-dark-color;
-                box-shadow: none;
-                // font-size: 1.125rem;
-                // margin: -0.2rem;
-            }
-        }
-
-        .btn-link {
-            color: $primary-color;
-
-            &:hover {
-                color: $dark-color;
-            }
-        }
-
-        .btn-text {
-            background-color: transparent;
-            color: inherit;
-            box-shadow: none;
 
             &.btn-primary {
+                background-color: $primary-color;
+                box-shadow: none;
+                // box-shadow: $liftedShadowLight;
+
+                &:hover,
+                &:active,
+                &:focus,
+                &:not(:disabled):not(.disabled):active:focus {
+                    background-color: $dark-color;
+                    box-shadow: none;
+                    // box-shadow: $liftedShadowDark;
+                    // font-size: 1.125rem;
+                    // margin: -0.2rem;
+                }
+            }
+
+            &.btn-secondary {
+                background-color: $highlight-color;
+                box-shadow: $liftedShadowLight;
+
+                &:hover,
+                &:active,
+                &:focus,
+                &:not(:disabled):not(.disabled):active:focus {
+                    background-color: $highlight-dark-color;
+                    box-shadow: none;
+                    // font-size: 1.125rem;
+                    // margin: -0.2rem;
+                }
+            }
+
+            &.btn-link {
                 color: $primary-color;
+
+                &:hover {
+                    color: $dark-color;
+                }
             }
 
-            &.btn-secondary {
-                color: $highlight-color;
+            &.btn-text {
+                background-color: transparent;
+                color: inherit;
+                box-shadow: none;
+
+                &.btn-primary {
+                    color: $primary-color;
+                }
+
+                &.btn-secondary {
+                    color: $highlight-color;
+                }
+
+                &.btn-danger {
+                    color: $red;
+                }
             }
 
-            &.btn-danger {
-                color: $red;
-            }
-        }
+            &.btn-text:hover,
+            &.btn-text:focus,
+            &.btn-text:active,
+            &.btn-text:not(:disabled):not(.disabled):active {
+                background-color: transparent;
+                color: inherit;
+                box-shadow: none;
 
-        .btn-text:hover,
-        .btn-text:focus,
-        .btn-text:active,
-        .btn-text:not(:disabled):not(.disabled):active {
-            background-color: transparent;
-            color: inherit;
-            box-shadow: none;
+                &.btn-primary {
+                    color: $dark-color;
+                }
 
-            &.btn-primary {
-                color: $dark-color;
-            }
+                &.btn-secondary {
+                    color: $highlight-dark-color;
+                }
 
-            &.btn-secondary {
-                color: $highlight-dark-color;
-            }
-
-            &.btn-danger {
-                color: darken($red, 10);
+                &.btn-danger {
+                    color: darken($red, 10);
+                }
             }
         }
 
@@ -385,7 +417,7 @@ html {
                 position: relative;
                 left: 1px;
                 margin-right: 1rem;
-                margin-top: 0.25rem;
+                margin-top: 0.125rem;
                 border-radius: 1px;
                 cursor: pointer;
                 transition: box-shadow 0.2s ease-in-out,
@@ -399,6 +431,7 @@ html {
 
             .checkbox-message {
                 font-size: 80%;
+                white-space: normal;
             }
         }
 
@@ -418,10 +451,11 @@ html {
             display: flex;
             align-items: center;
             margin: 0rem;
+            font-weight: 100;
         }
 
         .label-error {
-            font-size: 80%;
+            font-size: 90%;
             color: $red;
             padding: 0rem 0.5em;
             font-weight: normal;
@@ -584,6 +618,9 @@ html {
             height: calc(100vh - 70px);
             width: 100vw;
             position: relative;
+            left: 0rem;
+            opacity: 1;
+            transition: opacity 0.4s ease-in-out, left 0.6s ease-in-out;
 
             .upload-progress-modal {
                 max-width: 500px;
@@ -666,6 +703,39 @@ html {
 
         .form-button:empty {
             display: none;
+        }
+
+        .badge-element {
+            position: relative;
+            font-size: 0.75rem;
+            font-weight: bold;
+            background-color: $highlight-color;
+            color: #fff;
+            padding: 0rem 0.33rem;
+            top: -0.75rem;
+            left: -0.5rem;
+            height: 18px;
+            border-radius: 1px;
+            text-decoration: none !important;
+            margin-right: -0.5rem;
+
+            &:empty {
+                display: none;
+            }
+
+            &.static {
+                top: 0rem;
+                left: 0rem;
+                margin-right: 0rem;
+            }
+
+            &.color-primary {
+                background-color: $primary-color;
+            }
+
+            &.color-dark {
+                background-color: $dark-color;
+            }
         }
     }
 
