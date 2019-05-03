@@ -742,7 +742,7 @@ html {
     * {
         box-sizing: border-box;
         color: inherit;
-        font: inherit;
+        font-family: inherit;
         backface-visibility: hidden;
     }
 }
