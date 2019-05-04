@@ -8,7 +8,7 @@ import { UserCredentials, UserModel } from '@/types'
 import Subject from '@/utils/subject'
 import { FileUploader } from '../file-upload'
 import { UserSchema, UserDataToAPI, ValidateData } from './user-schema'
-import { FormFieldsFlat } from './user-forms';
+import Get from '@/utils/get';
 
 const urlKeys: { [key: string]: string } = {
     phoneNumbers: `phonenum`,
@@ -50,7 +50,10 @@ class User {
         }
 
         this.modelUser(existing)
-        this.getUser(existing)
+
+        if (existing && existing.id) {
+            this.getUser(existing)
+        }
 
         // tslint:disable-next-line:align
         // ; (window as any).user = this
@@ -92,17 +95,16 @@ class User {
         return result
     }
 
-    public getData(urlKey: string, property: string) {
-        return requests.get(`/user/${this.model$.value.id}/${urlKey}`, {}, this.model$.value.token)
-            .then((response: any) => {
-                return this.modelUser(
-                    Object.assign(
-                        {},
-                        this.model$.value,
-                        { [property]: response }
-                    )
-                )
-            })
+    public getData(urlKey: string, data?: any) {
+        const userId = Get(data, `id`, Get(this.model$.value, `id`))
+        const token = Get(data, `token`, Get(this.model$.value, `token`))
+
+        if (!userId || !token) {
+            return Promise.reject(`invalid user`)
+        }
+
+        return requests.get(`/user/${userId}/${urlKey}`, {}, token)
+            .then((response: any) => Promise.resolve(response))
             .catch((err) => {
                 /** TODO */
                 return Promise.reject(err)
@@ -121,15 +123,18 @@ class User {
 
                 if (!response.id) { throw new Error(response) }
 
-                this.modelUser(
-                    Object.assign(
-                        {},
-                        data,
-                        response
-                    )
-                )
-
-                return this.getData(`phonenum`, `phoneNumbers`)
+                return this.getData(`phonenum`, data)
+                    .then((phones: any) => {
+                        return this.modelUser(
+                            Object.assign(
+                                {},
+                                data,
+                                response,
+                                { phoneNumbers: phones }
+                            )
+                        )
+                    })
+                    .catch(Promise.reject)
             })
             .catch(() => {
                 return this.refreshToken(data)
@@ -137,79 +142,48 @@ class User {
     }
 
     public refreshToken(data: UserModel) {
+        this.logout()
+        return Promise.reject()
         /** TODO GET REFRESH PATH */
-        return requests.get(`/user/${data.id}`, data)
-            .then((response: any) => {
+        // return requests.get(`/user/${data.id}`, data)
+        //     .then((response: any) => {
 
-                if (!response.id) {
-                    /** TODO get refresh path */
-                    throw new Error(response)
-                    // return
-                }
+        //         if (!response.id) {
+        //             /** TODO get refresh path */
+        //             throw new Error(response)
+        //             // return
+        //         }
 
-                return this.modelUser(
-                    Object.assign(
-                        {},
-                        data,
-                        response
-                    )
-                )
-            })
-            .catch(() => {
-                return this.logout()
-            })
-    }
-
-    public setCompletionStats() {
-        const model = this.model$.value
-        const stats = this.completionStats$.value
-        const fields = FormFieldsFlat()
-
-        Object.keys(fields).forEach((key: string) => {
-            const fieldCount = fields[key].length
-
-            if (key === `account`) {
-                stats[key] = fields[key].filter((field: string) => {
-                    return !!model[field]
-                }).length / (fieldCount - 2) // - 2 for passwords
-
-                return
-            }
-
-            stats[key] = fields[key].filter((field: string) => {
-                return !!model[key] && model[key].length && !!model[key][0][field]
-            }).length / fieldCount
-        })
-
-        this.completionStats$.next(stats)
+        //         return this.modelUser(
+        //             Object.assign(
+        //                 {},
+        //                 data,
+        //                 response
+        //             )
+        //         )
+        //     })
+        //     .catch(() => {
+        //         return this.logout()
+        //     })
     }
 
     public modelUser(data: any) {
         if (!data || !data.token) {
-            localStorage.removeItem(`CAI-USER`)
-            this.model$.next({})
-            this.loggedIn$.next(false)
-            this.setReady()
-            return this.model$.value
+            return this.logout()
         }
 
-        if (data.password) {
-            delete data.password
-        }
-
-        if (data.confirmPassword) {
-            delete data.confirmPassword
-        }
+        delete data.password
+        delete data.confirmPassword
 
         const model = ValidateData(data)
-
         this.model$.next(model)
         this.loggedIn$.next(!!model.token)
-        this.setCompletionStats()
 
         localStorage.setItem(`CAI-USER`, JSON.stringify(this.model$.value))
 
         this.setReady()
+
+        return this.model$.value
     }
 
     public update(data: any): Promise<UserModel> {
@@ -254,8 +228,15 @@ class User {
             if (!userId || !token) { return reject(`invalid user`) }
 
             const finish = () => {
-                return this.getData(urlKey, modelKey)
-                    .then(resolve)
+                return this.getData(urlKey)
+                    .then((newData: any) => {
+                        return this.modelUser(
+                            Object.assign({},
+                                this.model$.value,
+                                { [modelKey]: newData }
+                            )
+                        )
+                    })
                     .catch(reject)
             }
 
@@ -333,7 +314,15 @@ class User {
 
         return requests.del(`/user/${this.model$.value.id}/${urlKey}/${dataId}`, apiData, this.model$.value.token)
             .then(() => {
-                this.getData(urlKey, modelKey)
+                return this.getData(urlKey)
+                    .then((newData: any) => {
+                        return this.modelUser(
+                            Object.assign({},
+                                this.model$.value,
+                                { [modelKey]: newData }
+                            )
+                        )
+                    })
             })
     }
 
@@ -349,7 +338,15 @@ class User {
         return requests.post(url, data, this.model$.value.token)
             .then(() => {
                 this.verifing$.next({ data: null, show: false })
-                this.getData(`phonenum`, `phoneNumbers`)
+                return this.getData(`phonenum`)
+                    .then((newData: any) => {
+                        return this.modelUser(
+                            Object.assign({},
+                                this.model$.value,
+                                { phoneNumbers: newData }
+                            )
+                        )
+                    })
             })
             .catch((err) => {
                 console.log(err)
@@ -363,7 +360,9 @@ class User {
             }
 
             localStorage.removeItem(`CAI-USER`)
-            window.location.reload()
+            this.model$.next({})
+            this.loggedIn$.next(false)
+            this.setReady()
         }
     }
 
@@ -374,17 +373,10 @@ class User {
                     throw new Error(response)
                 }
 
-                this.modelUser(response)
-
                 return this.getUser(response)
-                    .then(() => {
-                        return this.model$.value
-                    })
+                    .then(() => this.model$.value)
             })
-            .catch((error) => {
-                /** TODO handle error */
-                return error
-            })
+            .catch((error) => error)
     }
 
     public register(credentials: UserCredentials) {

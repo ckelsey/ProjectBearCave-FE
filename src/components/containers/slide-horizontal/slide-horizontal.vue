@@ -1,6 +1,7 @@
 <template>
     <div class="slide-horizontal" :class="showing ? `showing`:``">
         <div class="slide-horizontal-inner" ref="inner">
+            <div class="markup" ref="markup"></div>
             <slot></slot>
         </div>
     </div>
@@ -22,10 +23,10 @@
         pointer-events: all;
     }
 
-    .slide-horizontal-inner{
+    .slide-horizontal-inner {
         min-width: 100%;
         min-height: 100%;
-        top:0px;
+        top: 0px;
         left: 0px;
     }
 }

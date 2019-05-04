@@ -737,6 +737,35 @@ html {
                 background-color: $dark-color;
             }
         }
+
+        .chevron::before {
+            border-style: solid;
+            border-width: 0.12rem 0.12rem 0 0;
+            content: "";
+            display: inline-block;
+            height: 0.6rem;
+            width: 0.6rem;
+            left: 0.6rem;
+            top: 0.4rem;
+            position: relative;
+            transform: rotate(-45deg);
+            vertical-align: top;
+        }
+
+        .chevron.right:before {
+            left: 0;
+            transform: rotate(45deg);
+        }
+
+        .chevron.bottom:before {
+            top: 0;
+            transform: rotate(135deg);
+        }
+
+        .chevron.left:before {
+            left: 0.25em;
+            transform: rotate(-135deg);
+        }
     }
 
     * {

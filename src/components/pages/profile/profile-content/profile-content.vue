@@ -4,6 +4,7 @@
             <bread-crumbs :breadCrumbs$="breadCrumbs$"></bread-crumbs>
             <button
                 class="btn btn-primary btn-circle"
+                :class="`new-${modelkey}`"
                 v-if="modelkey !== `account`"
                 @click="updateBreadCrumbs({})"
             >
@@ -23,19 +24,10 @@
                 <slide-horizontal
                     :show$="formState$"
                     :equals="false"
+                    :markup$="existingFormsTemplate$"
                     ref="list"
                     class="content-list"
-                >
-                    <div
-                        class="profile-content-list-item d-flex align-items-center justify-content-between"
-                        v-for="(obj, $index) in formData.existingForms"
-                        :key="$index"
-                        @click="updateBreadCrumbs(obj)"
-                    >
-                        <span>{{obj.heading}}</span>
-                        <font-awesome-icon icon="chevron-right"></font-awesome-icon>
-                    </div>
-                </slide-horizontal>
+                ></slide-horizontal>
 
                 <slide-horizontal
                     :show$="formState$"

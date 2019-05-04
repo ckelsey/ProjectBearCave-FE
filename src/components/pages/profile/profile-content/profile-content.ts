@@ -6,7 +6,7 @@ import translate from '@/services/translate/translate'
 import FormElement from '@/components/forms/form-element/form-element'
 import CollapseContent from '@/components/containers/collapse-content/collapse-content'
 import Subject from '@/utils/subject'
-import Get from '@/utils/get';
+import Get from '@/utils/get'
 import BreadCrumbs from '@/components/navigation/bread-crumb/bread-crumb'
 import SlideHorizontal from '@/components/containers/slide-horizontal/slide-horizontal'
 
@@ -26,11 +26,19 @@ export default class ProfileContent extends Vue {
     public newFormText!: string
 
     @Prop()
+    public noContentMarkup!: HTMLElement
+
+    @Prop()
     public modelkey: any
 
     @Prop()
     public profileState$!: Subject
 
+    public get List() {
+        return this.$refs.list as any
+    }
+
+    public existingFormsTemplate$ = new Subject(document.createElement(`div`))
     public formState$ = new Subject(false)
     public breadCrumbs$ = new Subject([])
     public user = user
@@ -84,8 +92,40 @@ export default class ProfileContent extends Vue {
     }
 
     public mounted() {
-        user.model$.subscribe((val) => {
+        user.model$.subscribe(val => {
             this.formData = UserForm(this.modelkey, val)
+
+            const existingFormContainer = document.createElement(`div`)
+
+            if (this.formData.existingForms.length) {
+                this.formData.existingForms.forEach((form: any) => {
+                    const div = document.createElement(`div`)
+                    div.className = `profile-content-list-item d-flex align-items-center justify-content-between`
+                    div.addEventListener(`click`, () => {
+                        this.updateBreadCrumbs(form)
+                    })
+
+                    const span = document.createElement(`span`)
+                    span.innerHTML = form.heading
+
+                    const icon = document.createElement(`span`)
+                    icon.className = `chevron right`
+
+                    div.appendChild(span)
+                    div.appendChild(icon)
+                    existingFormContainer.appendChild(div)
+                })
+            } else if (this.noContentMarkup) {
+                existingFormContainer.appendChild(this.noContentMarkup)
+            }
+
+            this.existingFormsTemplate$.next(existingFormContainer)
+        })
+
+        this.profileState$.subscribe((val: any) => {
+            if (val && val === this.modelkey) {
+                this.updateBreadCrumbs(this.modelkey)
+            }
         })
 
         this.updateBreadCrumbs(this.modelkey)

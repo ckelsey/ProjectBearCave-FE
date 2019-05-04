@@ -16,8 +16,8 @@ export const vehicle = {
             key: `year`,
             validation: (val: any) => Validate.year(val)
         },
-        endDate: Object.assign({}, endDate, { label: `Purchase date` }),
-        startDate: Object.assign({}, startDate, { label: `Sell date` }),
+        endDate: Object.assign({}, endDate, { label: `Sell date` }),
+        startDate: Object.assign({}, startDate, { label: `Purchase date` }),
         current: Object.assign({}, current, { label: `Current` }),
         file: {
             type: `file`,

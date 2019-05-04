@@ -14,11 +14,18 @@ export default class SlideHorizontal extends Vue {
     @Prop()
     public isempty: any
 
+    @Prop()
+    public markup$: any
+
     public showing = false
     public timer: any
 
     public get Equals() {
         return this.equals !== undefined ? this.equals : true
+    }
+
+    public get markup() {
+        return this.$el.querySelector(`.markup`)
     }
 
     public mounted() {
@@ -112,5 +119,15 @@ export default class SlideHorizontal extends Vue {
         el.style.position = `absolute`
         el.style.transformOrigin = `100% 50%`
         el.style.transform = `scaleX(0)`
+
+        if (this.markup$) {
+            this.markup$.subscribe((html: HTMLElement) => {
+                if (this.markup) {
+                    this.markup.innerHTML = ``
+                    this.markup.appendChild(html)
+                    run()
+                }
+            })
+        }
     }
 }

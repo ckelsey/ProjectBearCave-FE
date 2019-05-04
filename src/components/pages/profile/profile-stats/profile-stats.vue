@@ -16,6 +16,8 @@
             </div>
         </div>
     </div>
+
+    <!-- CIRCLE -->
     <!-- <div
             v-for="(stat, index) in statKeys"
             :key="index"
@@ -117,6 +119,8 @@
         }
     }
 }
+
+// CIRCLE
 
 // .stats-container {
 //     position: relative;

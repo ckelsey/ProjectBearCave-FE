@@ -2,7 +2,7 @@ import User from './user'
 import State from '../state'
 import { FormHelperMergeData, FormHelperCancelClickAndGetData } from './user-form-helpers'
 
-export const AccountFormHeading = (item: any) => `${item.fname[0].toUpperCase}${item.fname.substring(1)}`
+export const AccountFormHeading = (item: any) => `${item.fname ? item.fname[0].toUpperCase : ``}${item.fname ? item.fname.substring(1) : ``}`
 
 export const AccountFormFields = [
     [`fname`, `lname`],

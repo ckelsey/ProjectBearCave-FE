@@ -24,7 +24,6 @@ export default class ListToSidebar extends Vue {
         this.show$.subscribe((val: any) => {
             if (val && val !== ``) {
                 this.isSidebar = true
-
                 return
             }
 

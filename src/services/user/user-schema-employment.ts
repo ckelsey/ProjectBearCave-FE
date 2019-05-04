@@ -4,8 +4,8 @@ export const employment = {
     type: `array`,
     properties: {
         company: Object.assign({}, requiredText, { label: `Company`, key: `company` }),
-        endDate: Object.assign({}, endDate, { label: `Start date` }),
-        startDate: Object.assign({}, startDate, { label: `Leave date` }),
+        endDate: Object.assign({}, endDate, { label: `Leave date` }),
+        startDate: Object.assign({}, startDate, { label: `Start date` }),
         current: Object.assign({}, current, { label: `Current` }),
         file: {
             type: `file`,

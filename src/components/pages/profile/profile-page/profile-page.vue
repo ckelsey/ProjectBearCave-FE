@@ -15,6 +15,7 @@
                         :title="tab.name"
                         :newFormText="tab.newFormText"
                         :profileState$="profileState$"
+                        :noContentMarkup="tab.noContentMarkup"
                     ></profile-content>
                 </slide-vertical>
             </list-to-sidebar>

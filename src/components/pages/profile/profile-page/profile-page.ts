@@ -18,31 +18,90 @@ export default class ProfilePage extends Vue {
     public profileState$ = new Subject(``)
 
     public get Tabs() {
-        return [{
+        const noContentMarkup = (kind: string, key: string) => {
+            const div = document.createElement(`div`)
+            const text1 = document.createElement(`span`)
+            text1.textContent = `You don't have any ${kind} associated with your account, would you like to `
+
+            const link = document.createElement(`a`)
+            link.href = `#`
+            link.textContent = `add one`
+            link.addEventListener(`click`, (e) => {
+                e.preventDefault()
+                const button = document.querySelector(`.new-${key}`) as HTMLElement
+
+                if (button) {
+                    button.click()
+                }
+            })
+
+            const text2 = document.createElement(`span`)
+            text2.textContent = `?`
+
+            div.appendChild(text1)
+            div.appendChild(link)
+            div.appendChild(text2)
+
+            return div
+        }
+
+        const results: any[] = [{
             name: `Account settings`,
             key: `account`,
             icon: `address-card`
-        }, {
+        }]
+
+        const phones: any = {
             name: `Phone numbers`,
             key: `phoneNumbers`,
             newFormText: `new phone number`,
             icon: `phone`
-        }, {
-            name: `Addresses`,
-            key: `address`,
-            newFormText: `new address`,
-            icon: `home`
-        }, {
-            name: `Vehicles`,
-            key: `vehicle`,
-            newFormText: `new vehicle`,
-            icon: `car`
-        }, {
+        }
+
+        phones.noContentMarkup = noContentMarkup(
+            phones.name.toLowerCase(),
+            phones.key
+        )
+
+        results.push(phones)
+
+        const employment: any = {
             name: `Employment history`,
             key: `employment`,
             newFormText: `new employment`,
-                icon: `briefcase`
-        }]
+            icon: `briefcase`
+        }
+
+        employment.noContentMarkup = noContentMarkup(
+            employment.name.toLowerCase(),
+            employment.key
+        )
+
+        results.push(employment)
+
+        return results
+        // , {
+        //     name: `Phone numbers`,
+        //     key: `phoneNumbers`,
+        //     newFormText: `new phone number`,
+        //     icon: `phone`,
+        //         noContentMarkup: noContentMarkup()
+        // }, {
+        //     name: `Addresses`,
+        //     key: `address`,
+        //     newFormText: `new address`,
+        //     icon: `home`
+        // }, {
+        //     name: `Vehicles`,
+        //     key: `vehicle`,
+        //     newFormText: `new vehicle`,
+        //     icon: `car`
+        // }, {
+        //     name: `Employment history`,
+        //     key: `employment`,
+        //     newFormText: `new employment`,
+        //     icon: `briefcase`
+        // }]
     }
 
     public mounted() {
@@ -50,47 +109,4 @@ export default class ProfilePage extends Vue {
             this.profileState$.next(``)
         })
     }
-    // public state = state
-    // public user = user
-    // public verifingData: any = null
-
-    // public get classes() {
-    //     const classes = []
-
-    //     switch (this.state.profile) {
-    //         case undefined:
-    //         case ``:
-    //             classes.push(`show-none`)
-    //             break
-    //     }
-
-    //     return classes.join(` `)
-    // }
-
-    // public get verifyNumber() {
-    //     return this.$refs.verifyNumber as HTMLInputElement
-    // }
-
-    // public get verifyModal() {
-    //     return this.$refs.verifyModal as any
-    // }
-
-    // public verifySMS(e: Event) {
-    //     if (e) {
-    //         e.preventDefault()
-    //     }
-
-    //     user.verifySMS(this.verifingData, this.verifyNumber.value)
-    // }
-
-    // public mounted() {
-    //     user.verifing$.subscribe((val: any) => {
-    //         this.verifingData = val.data
-    //         if (val.show) {
-    //             this.verifyModal.show()
-    //         } else {
-    //             this.verifyModal.close()
-    //         }
-    //     })
-    // }
 }

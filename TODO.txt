@@ -1,12 +1,9 @@
 # Class Action Inc Frontend
 
 ## TODO
-
-- breadcrumbs for profile
-- new form button on right of breadcrumb
-- list items as links that slide and propagate breadcrumb
-- scrollbar flash on slide vertical element transition, esp account form to any other form
-
+- ok to send sms
+- empty profile secton message
+- split up user models to their own
 - pretty graph
 - hover for transaction data points on graph
 
@@ -21,31 +18,9 @@
 
 - smoother animations
 
--   phone issues
-    -   number should be returned with country code?
-    -   number shouldn't be formatted?
-    -   start/end date isn't returned?
-    -   list of carriers?
-    -   what types i.e mobile?
-    -   utility bill upload or ther kind of verification?
-    -   can user also return phones, if not can return id's instead of number?
-    -   is there a current field?
-    -   how do you want dates? timestamp?
-
--   address issues
-    -   response is [{"address":[]}] ?
-    -   how do you want dates? timestamp?
-    -   should we split up the address from one string to different fields so we won't need to parse?
-    -   country?
-    -   consistency with id/\_id/user_id
-    -   put doesn't return anything
-
--   loader for requests
 -   form submissions to trigger browser autocomplete saves
 -   text input to have manual autocomplete list for phone carrier(js list if can't do)
 -   remove elements that aren't visibile till just after
--   disable save btn until inputs have changed
--   error service to api
 -   ticket form validation
 -   faq's
 -   map on about us
