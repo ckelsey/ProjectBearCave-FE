@@ -1,5 +1,5 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import state from '@/services/state'
+import alert from '@/services/alert'
 
 @Component({
     components: {}
@@ -19,10 +19,10 @@ export default class AlertMessage extends Vue {
     public close: Function | undefined
 
     public mounted() {
-        state.alert$.subscribe((val) => {
+        alert.alert$.subscribe((val) => {
             if (!!val && val.closeIn > 0) {
                 setTimeout(() => {
-                    state.closeAlert()
+                    alert.closeAlert()
                 }, val.closeIn)
             }
         })

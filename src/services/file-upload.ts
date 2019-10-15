@@ -1,6 +1,6 @@
 import constants from './constants'
-import user from './user/user'
 import Subject from '@/utils/subject'
+import { Account } from './account/internal'
 
 const bytesPerChunk = 647212
 
@@ -203,8 +203,8 @@ export class FileUploader {
             worker.postMessage({
                 url: constants.apiUploadAuth,
                 data: JSON.stringify({
-                    userId: user.model$.value.id,
-                    userToken: user.model$.value.token,
+                    userId: Account.model$.value.id,
+                    userToken: Account.model$.value.token,
                     total: this.total - index,
                     mime: this.mime
                 })
@@ -247,8 +247,8 @@ export class FileUploader {
         worker.postMessage({
             url: constants.apiUploadStitch,
             data: JSON.stringify({
-                userId: user.model$.value.id,
-                userToken: user.model$.value.token,
+                userId: Account.model$.value.id,
+                userToken: Account.model$.value.token,
                 files: this.uploadedUrls,
                 ext: this.ext
             })
@@ -257,7 +257,7 @@ export class FileUploader {
 
     /** @desc Start the upload flow */
     public upload() {
-        if (!this.file || !user.model$.value.id || !user.model$.value.token) {
+        if (!this.file || !Account.model$.value.id || !Account.model$.value.token) {
             return this.state$.next({ error: `invalid data` })
         }
 

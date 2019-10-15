@@ -1,5 +1,4 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import { FormCompare } from '@/services/user/user-forms';
 
 @Component({
     components: {}
@@ -13,9 +12,7 @@ export default class FormElement extends Vue {
             return []
         }
 
-        return this.model.buttons.filter((button: any) => {
-            return button.position === `left`
-        })
+        return this.model.buttons.filter((button: any) => button.position === `left`)
     }
 
     public get rightButtons() {
@@ -50,5 +47,10 @@ export default class FormElement extends Vue {
     public checkDirty() {
         // const formState = FormCompare(this.model)
         // console.log(formState)
+    }
+
+    public submit(e: Event) {
+        e.preventDefault()
+        return false
     }
 }

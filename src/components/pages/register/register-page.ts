@@ -1,6 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
-import { UserForm } from '@/services/user/user-forms'
 import FormElement from '@/components/forms/form-element/form-element'
+import { Account } from '@/services/account/internal'
 
 @Component({
     components: {
@@ -8,12 +8,21 @@ import FormElement from '@/components/forms/form-element/form-element'
     }
 })
 export default class RegisterPage extends Vue {
-    public formData: any = {
-        existingForms: [],
-        newForm: []
+    public formData: any = {}
+    public timer: any
+
+    public createForm() {
+        clearTimeout(this.timer)
+
+        this.timer = setTimeout(() => {
+            this.formData = Account.form(`register`)
+        }, 33)
     }
 
     public mounted() {
-        this.formData = UserForm(`register`, {})
+        Account.model$.subscribe(val => {
+            if (val && val.id) { return }
+            this.createForm()
+        })
     }
 }

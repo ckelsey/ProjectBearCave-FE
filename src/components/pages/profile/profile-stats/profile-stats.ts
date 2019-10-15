@@ -1,6 +1,4 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
-import user from '@/services/user/user'
-import state from '@/services/state'
 import translate from '@/services/translate/translate'
 import Subject from '@/utils/subject'
 
@@ -28,25 +26,25 @@ export default class ProfileStats extends Vue {
     }
 
     public mounted() {
-        const getCompletion = (stat: any, userModel: any) => {
-            return stat.key === `account`
-                ? !!userModel.fname && !!userModel.lname && !!userModel.email
-                    ? 1 : 0
-                : userModel[stat.key] && userModel[stat.key].length
-                    ? 1 : 0
-        }
+        // const getCompletion = (stat: any, userModel: any) => {
+        //     return stat.key === `account`
+        //         ? !!userModel.fname && !!userModel.lname && !!userModel.email
+        //             ? 1 : 0
+        //         : userModel[stat.key] && userModel[stat.key].length
+        //             ? 1 : 0
+        // }
 
-        user.model$.subscribe((val) => {
-            if (val && val.id) {
-                this.stats.forEach((stat: any, index: number) => {
-                    this.stats[index].complete = getCompletion(stat, val)
-                })
+        // user.model$.subscribe((val) => {
+        //     if (val && val.id) {
+        //         this.stats.forEach((stat: any, index: number) => {
+        //             this.stats[index].complete = getCompletion(stat, val)
+        //         })
 
-                this.stats.sort((a: any, b: any) => {
-                    return b.complete - a.complete
-                })
-            }
-        })
+        //         this.stats.sort((a: any, b: any) => {
+        //             return b.complete - a.complete
+        //         })
+        //     }
+        // })
     }
 }
 
@@ -70,7 +68,6 @@ export default class ProfileStats extends Vue {
 
 
 
-// public state = state
     // public dashArray = 339.292
     // public total = 0
     // public stats: any = {

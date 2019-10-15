@@ -1,4 +1,3 @@
-import user from './user/user'
 import requests from './requests'
 import Subject from '@/utils/subject'
 
@@ -6,7 +5,8 @@ class Claims {
     public claim$: Subject
 
     public get token() {
-        return user.model$.value ? user.model$.value.token : undefined
+        return ``
+        // return user.model$.value ? user.model$.value.token : undefined
     }
 
     public get unfiledClaims() {
@@ -126,9 +126,9 @@ class Claims {
     constructor() {
         this.claim$ = new Subject([])
 
-        user.loggedIn$.subscribe(() => {
-            this.getClaims()
-        })
+        // user.loggedIn$.subscribe(() => {
+        //     this.getClaims()
+        // })
     }
 
     public file(claim: any) {

@@ -1,4 +1,5 @@
 import { ValidateResponse } from '@/types'
+import Empty from '@/utils/empty'
 
 const invalidMessage = (input?: HTMLInputElement): string | undefined => {
     let message
@@ -17,11 +18,51 @@ const invalidMessage = (input?: HTMLInputElement): string | undefined => {
     return message
 }
 
-const Empty = (val: any): boolean => {
-    return val === undefined || val === false || val === null || val === `` || (Array.isArray(val) && val.length === 0)
-}
-
 class Validate {
+    public static GenericInvalid = {
+        original: null,
+        valid: false,
+        sanitized: null,
+        reason: [`no value`]
+    }
+
+    public static url(
+        str: any,
+    ): ValidateResponse {
+        const original = str
+
+        if (Empty(str) || str.length === 0) {
+            return this.GenericInvalid
+        }
+
+        if (typeof str !== `string` && str !== undefined) {
+            str = (str as any).toString()
+        }
+
+        const reasons: string[] = []
+        const link = document.createElement('a')
+        link.href = str
+
+        if (Empty(link.protocol)) {
+            reasons.push(`Missing url protocol`)
+        }
+
+        if (Empty(link.host)) {
+            reasons.push(`Missing url host`)
+        }
+
+        if (Empty(link.host)) {
+            reasons.push(`Missing url host`)
+        }
+
+        return {
+            original,
+            valid: reasons.length === 0,
+            sanitized: link.href,
+            reason: reasons
+        }
+    }
+
     public static usZipCode(
         val: any,
     ): ValidateResponse {
@@ -280,19 +321,12 @@ class Validate {
 
     public static email(
         str: string,
-        allowedHtmlTags?: string[],
-        disallowedHtmlTags?: string[],
         input?: HTMLInputElement
     ): ValidateResponse {
         const original = str
 
         if (Empty(str) || str.length === 0) {
-            return {
-                original,
-                valid: false,
-                sanitized: str,
-                reason: [`no value`]
-            }
+            return this.GenericInvalid
         }
 
         if (!str) {
@@ -340,7 +374,7 @@ class Validate {
             }
         }
 
-        return Validate.html(str, allowedHtmlTags, disallowedHtmlTags)
+        return Validate.html(str)
     }
 
     public static text(

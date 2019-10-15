@@ -1,5 +1,4 @@
 import { Component, Vue } from 'vue-property-decorator'
-import state from '@/services/state'
 import constants from '@/services/constants'
 import SupportTicket from '@/components/forms/support-ticket/support-ticket'
 
@@ -10,7 +9,6 @@ import SupportTicket from '@/components/forms/support-ticket/support-ticket'
 })
 export default class AboutPage extends Vue {
     public constants = constants
-    public state = state
     public title = `People that care`
     public subTitle = `who we are`
     public message = `Clarence has gathered a small and passionate team of humans from across the globe! We all believe in restoring balance and getting consumers what they’re owed.`

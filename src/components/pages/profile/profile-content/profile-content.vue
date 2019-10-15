@@ -1,12 +1,17 @@
 <template>
     <div class="profile-content-section pt-1 pr-1 pb-4 pl-4">
-        <div class="profile-content-header d-flex align-items-center justify-content-between mb-3">
+        <div class="profile-content-header d-flex align-items-center justify-content-between mb-3" v-if="model && model.key">
             <bread-crumbs :breadCrumbs$="breadCrumbs$"></bread-crumbs>
-            <button
+            <!-- <button
                 class="btn btn-primary btn-circle"
                 :class="`new-${modelkey}`"
                 v-if="modelkey !== `account`"
                 @click="updateBreadCrumbs({})"
+            > -->
+            <button
+                class="btn btn-primary btn-circle"
+                :class="`new-${model.key}`"
+                v-if="model.key !== `account`"
             >
                 <span class="btn-circle-inner">
                     <font-awesome-icon icon="plus"></font-awesome-icon>
@@ -15,12 +20,12 @@
         </div>
         <div class="profile-content-container">
             <div
-                v-if="modelkey === `account` && formData.existingForms[0]"
+                v-if="model.key === `account`"
                 class="profile-content-container-inner account-form"
             >
-                <form-element :model="formData.existingForms[0]"></form-element>
+                <form-element :model="model.form"></form-element>
             </div>
-            <div v-if="modelkey !== `account`" class="profile-content-container-inner">
+            <!-- <div v-if="modelkey !== `account`" class="profile-content-container-inner">
                 <slide-horizontal
                     :show$="formState$"
                     :equals="false"
@@ -37,7 +42,7 @@
                 >
                     <form-element :model="currentForm"></form-element>
                 </slide-horizontal>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

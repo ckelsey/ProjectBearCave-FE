@@ -11,12 +11,16 @@
                     :equals="tab.key"
                 >
                     <profile-content
+                        :model="tab"
+                        :profileState$="profileState$"
+                    ></profile-content>
+                    <!-- <profile-content
                         :modelkey="tab.key"
                         :title="tab.name"
                         :newFormText="tab.newFormText"
                         :profileState$="profileState$"
                         :noContentMarkup="tab.noContentMarkup"
-                    ></profile-content>
+                    ></profile-content>-->
                 </slide-vertical>
             </list-to-sidebar>
         </section>

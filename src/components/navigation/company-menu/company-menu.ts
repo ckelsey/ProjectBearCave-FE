@@ -1,6 +1,6 @@
 import { Component, Vue } from 'vue-property-decorator'
-import state from '@/services/state'
 import SidePanel from '@/components/containers/side-panel/side-panel'
+import routes from '@/services/routes/routes'
 
 @Component({
     components: {
@@ -8,7 +8,7 @@ import SidePanel from '@/components/containers/side-panel/side-panel'
     }
 })
 export default class CompanyMenu extends Vue {
-    public state = state
+    public route = ``
 
     public get $panel() {
         return this.$refs.panel as any
@@ -20,11 +20,15 @@ export default class CompanyMenu extends Vue {
 
     public goTo(e: Event, val: string) {
         e.preventDefault()
-        this.state.state = val
+        routes.route(val)
         this.$panel.toggle()
     }
 
     public togglePanel(e: Event) {
         e.preventDefault()
+    }
+
+    public mounted() {
+        routes.route$.subscribe(val => this.route = val)
     }
 }

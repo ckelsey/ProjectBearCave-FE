@@ -1,5 +1,6 @@
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import anime from 'animejs'
+import Empty from '@/utils/empty'
 
 @Component({})
 
@@ -17,14 +18,8 @@ export default class PageContent extends Vue {
     public showing = false
     public timer: any
 
-    public get Classes() {
-        return {
-            showing: this.showing
-        }
-    }
-
-    public get Equals() {
-        return this.equals !== undefined ? this.equals : true
+    public Show(val: string) {
+        return this.equals !== undefined ? this.equals === val : this.isempty ? Empty(val) : false
     }
 
     public mounted() {
@@ -55,18 +50,8 @@ export default class PageContent extends Vue {
             }, 33)
         }
 
-        const getVal = (val: any) => {
-            let proposed = val === this.Equals
-
-            if (this.isempty) {
-                proposed = !val || val === ``
-            }
-
-            return proposed
-        }
-
         this.show.subscribe((val: any) => {
-            val = getVal(val)
+            val = this.Show(val)
 
             if (val === this.showing) { return }
 

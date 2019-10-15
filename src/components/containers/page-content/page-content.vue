@@ -1,5 +1,5 @@
 <template>
-    <section ref="section" class="page-content-wrapper" :class="Classes">
+    <section ref="section" class="page-content-wrapper" :class="showing ? `showing` : ``">
         <div class="page-content-inner-wrapper" ref="inner">
             <div class="page-content-content" ref="content">
                 <slot></slot>

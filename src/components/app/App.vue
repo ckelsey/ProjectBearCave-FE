@@ -1,68 +1,72 @@
 <template>
-    <div id="app">
+    <div id="app" v-if="ready">
         <nav-bar></nav-bar>
         <div class="app-content">
             <div id="app-content-inner">
-                <page-content :show="routes.home$">
+                <page-content :show="route$" equals="">
                     <home-page></home-page>
                 </page-content>
 
-                <page-content :show="routes.about$">
+                <page-content :show="route$" equals="upload">
+                    <upload-test></upload-test>
+                </page-content>
+
+                <page-content :show="route$" equals="about">
                     <about-page></about-page>
                 </page-content>
 
-                <page-content :show="routes.support$">
+                <page-content :show="route$" equals="support">
                     <support-page></support-page>
                 </page-content>
 
-                <page-content :show="routes.login$">
+                <page-content :show="route$" equals="login">
                     <login-page></login-page>
                 </page-content>
 
-                <page-content :show="routes.register$">
+                <page-content :show="route$" equals="register">
                     <register-page></register-page>
                 </page-content>
 
-                <page-content :show="routes.terms$">
+                <page-content :show="route$" equals="terms">
                     <terms-page></terms-page>
                 </page-content>
 
-                <page-content :show="routes.agreement$">
+                <page-content :show="route$" equals="agreement">
                     <agreement-page></agreement-page>
                 </page-content>
 
-                <page-content :show="routes.privacy$">
+                <page-content :show="route$" equals="privacy">
                     <privacy-page></privacy-page>
                 </page-content>
 
-                <page-content :show="routes.profile$">
+                <page-content :show="route$" equals="profile">
                     <profile-page></profile-page>
                 </page-content>
 
-                <page-content :show="routes.wallet$">
+                <page-content :show="route$" equals="wallet">
                     <wallet-page></wallet-page>
                 </page-content>
 
-                <page-content :show="routes.claims$">
+                <page-content :show="route$" equals="claims">
                     <claims-page></claims-page>
                 </page-content>
 
-                <page-content :show="routes.discovery$">
+                <page-content :show="route$" equals="discovery">
                     <discovery-page></discovery-page>
                 </page-content>
 
-                <page-content :show="routes.termsModal$">
+                <page-content :show="route$" equals="terms/agreement">
                     <terms-form></terms-form>
                 </page-content>
 
                 <alert-message
-                    :active="state.alert.active"
-                    :msg="state.alert.msg"
-                    :status="state.alert.status"
-                    :close="state.closeAlert"
+                    :active="alert.alert.active"
+                    :msg="alert.alert.msg"
+                    :status="alert.alert.status"
+                    :close="alert.closeAlert"
                 ></alert-message>
 
-                <modal-content id="file-upload-progress" ref="uploadProgress">
+                <!-- <modal-content id="file-upload-progress" ref="uploadProgress">
                     <div
                         class="d-flex align-items-center justify-content-center flex-column upload-progress-modal"
                     >
@@ -80,7 +84,7 @@
                             <button class="btn btn-secondary" @click="cancelUpload">Cancel</button>
                         </div>
                     </div>
-                </modal-content>
+                </modal-content> -->
             </div>
         </div>
     </div>
@@ -98,7 +102,7 @@ html {
         height: 100vh;
         padding: 0rem;
         margin: 0px;
-        font-family: "Nunito Sans", Helvetica, Arial, sans-serif;
+        font-family: "Nunito", Helvetica, Arial, sans-serif;
         font-size: 1rem;
         box-sizing: border-box;
         overflow: hidden;
@@ -501,24 +505,6 @@ html {
             cursor: pointer;
         }
 
-        .form-row {
-            display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
-            width: 100%;
-            flex-wrap: wrap;
-            width: calc(100% + 3rem);
-            margin: 0rem 0rem 0rem -3rem;
-
-            .form-row-item {
-                flex-grow: 1;
-                margin: 0px;
-                padding-left: 3rem;
-                max-width: 500px;
-                min-width: 200px;
-            }
-        }
-
         .color-primary,
         .color-hover-primary:hover {
             color: $primary;
@@ -699,10 +685,6 @@ html {
 
         .pointer {
             cursor: pointer;
-        }
-
-        .form-button:empty {
-            display: none;
         }
 
         .badge-element {

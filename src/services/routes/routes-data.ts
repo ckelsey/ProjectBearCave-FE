@@ -1,43 +1,53 @@
 import constants from '../constants'
 
 export const routesData: any = {
-    profile: {
+    'upload': {
+        title: `Upload`,
+        isUser: true
+    },
+    'profile': {
         title: `Profile`,
         isUser: true
     },
-    claims: {
+    'claims': {
         title: `Claims`,
         isUser: true
     },
-    wallet: {
+    'wallet': {
         title: `Wallet`,
         isUser: true
     },
-    discovery: {
+    'discovery': {
         title: `Settlement discovery`,
         isUser: true
     },
-    login: {
+    'login': {
         title: `Sign in`,
         isUser: false
     },
-    register: {
+    'register': {
         title: `Sign up`,
         isUser: false
     },
-    about: {
+    'about': {
         title: `About ${constants.companyName}`,
     },
-    support: {
+    'support': {
         title: `Need help?`
     },
-    terms: {
+    'terms': {
         title: `Terms and conditions`,
     },
-    privacy: {
+    'terms/agreement': {
+        title: `Terms and conditions`,
+    },
+    'privacy': {
         title: `Privacy`,
     },
-    agreement: {
+    'agreement': {
         title: `User agreement`,
+    },
+    'home': {
+        title: constants.companyName,
     },
 }

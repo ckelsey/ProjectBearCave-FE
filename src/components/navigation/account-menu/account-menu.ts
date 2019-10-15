@@ -1,8 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator'
-import user from '@/services/user/user'
-import state from '@/services/state'
 import claims from '@/services/claims'
 import SidePanel from '@/components/containers/side-panel/side-panel'
+import { Account } from '@/services/account/internal'
+import routes from '@/services/routes/routes'
 
 @Component({
     components: {
@@ -10,10 +10,8 @@ import SidePanel from '@/components/containers/side-panel/side-panel'
     }
 })
 export default class AccountMenu extends Vue {
-    public state = state
-    public user = user
-    public loggedIn = false
-    public userReady = false
+    public route = ``
+    public loggedIn: boolean = false
     public claimCount = ``
 
     public get $panel() {
@@ -33,25 +31,27 @@ export default class AccountMenu extends Vue {
 
     public goTo(e: Event, key: string) {
         e.preventDefault()
-        this.state.state = key
-        this.state.profile = ``
-        this.$panel.toggle()
+        routes.route(key)
+
+        if (this.$panel) {
+            this.$panel.toggle()
+        }
     }
 
     public logout(e: Event) {
         e.preventDefault()
-        this.user.logout()
-        this.state.state = ``
+        Account.logout()
+        routes.route(``)
         this.$panel.toggle()
     }
 
     public mounted() {
-        this.user.loggedIn$.subscribe((val) => {
+        Account.loggedIn$.subscribe(val => {
             this.loggedIn = val
         })
 
-        this.user.ready$.subscribe((val) => {
-            this.userReady = val
+        routes.route$.subscribe(val => {
+            this.route = val
         })
 
         claims.claim$.subscribe((val: any) => {

@@ -1,11 +1,8 @@
 import { Component, Vue } from 'vue-property-decorator'
-import state from '@/services/state'
 import requests from '@/services/requests'
 
 @Component({ components: {} })
 export default class SupportTicket extends Vue {
-
-    public state = state
 
     public ticket = {
         name: ``,

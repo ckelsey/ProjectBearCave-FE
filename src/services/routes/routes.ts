@@ -1,58 +1,43 @@
-import user from '../user/user'
-import Subject from '@/utils/subject'
-import { routesData } from './routes-data'
 import constants from '../constants'
+import { routesData } from './routes-data'
+import { Account } from '../account/internal'
+import Subject from '@/utils/subject'
 
 const defaultTitle = constants.companyName
-
 const path = (): string => window.location.pathname.split(`/`).filter((p) => p.trim() !== ``).join(`/`)
+const routeSubjects: { [key: string]: Subject } = {}
 
-const isLoggedIn = new Subject(undefined)
-
-let current: string | undefined
+Object.keys(routesData).forEach(key => {
+    routeSubjects[key] = new Subject(false)
+})
 
 class Routes {
 
-    public get current() {
-        return current
-    }
-
-    public set current(val) {
-        current = val
-    }
+    public route$ = new Subject(``)
 
     constructor() {
-        user.loggedIn$.subscribe((val) => {
-            isLoggedIn.next(val)
+        window.addEventListener('popstate', (e) => {
+            console.log(e)
+            this.route(e.state)
         })
 
-        this.route()
-            .then((val: string) => {
-                this.current = val
-            })
+        this.route().then(val => this.route$.next(val))
     }
 
-    public path() {
-        return path()
+    public pushHistory(route: string) {
+        window.history.pushState(
+            route,
+            this.title(route),
+            `${location.origin}/${route}`
+        )
     }
 
-    public isLoggedIn(): Promise<boolean> {
-        return new Promise((resolve, reject) => {
-
-            const res = (is: boolean) => {
-                if (is) { return resolve(true) }
-                return reject(false)
-            }
-
-            if (isLoggedIn.value !== undefined) {
-                return res(isLoggedIn.value)
-            }
-
-            const waitFor = isLoggedIn.subscribe((val) => {
-                waitFor()
-                res(val)
-            })
-        })
+    public replaceHistory(route: string) {
+        window.history.replaceState(
+            route,
+            this.title(route),
+            `${location.origin}/${route}`
+        )
     }
 
     public title(key: string): string {
@@ -60,29 +45,42 @@ class Routes {
     }
 
     public route(pathArg?: string): Promise<string> {
-        let p = pathArg
-
         return new Promise((resolve) => {
-            if (p === undefined) { p = path() }
-            if (!p) { return resolve(``) }
 
-            while (p[0] === `/`) {
-                p = p.substring(1)
+            const finish = (result: string) => {
+                if (this.route$.value !== result) {
+                    this.pushHistory(result)
+                } else {
+                    this.replaceHistory(result)
+                }
+
+                this.route$.next(result)
+
+                return resolve(result)
             }
 
-            if (Object.keys(routesData).indexOf(p) === -1) { return resolve(``) }
+            if (pathArg === undefined) { pathArg = path() }
+            if (!pathArg) { return finish(``) }
 
-            if (!routesData[p].hasOwnProperty(`isUser`)) { return resolve(p) }
+            while (pathArg[0] === `/`) {
+                pathArg = pathArg.substring(1)
+            }
 
-            const toMatch = routesData[p].isUser
+            if (Object.keys(routesData).indexOf(pathArg) === -1) { return finish(``) }
+            if (!routesData[pathArg].hasOwnProperty(`isUser`)) { return finish(pathArg) }
 
-            return this.isLoggedIn()
-                .then(() => {
-                    return resolve(toMatch === true ? p : ``)
-                })
-                .catch(() => {
-                    return resolve(toMatch === false ? p : ``)
-                })
+            const p: string = pathArg
+
+            const loggedInSubscription = Account.loggedIn$.subscribe(val => {
+                if (val === undefined) { return }
+
+                requestAnimationFrame(() => { loggedInSubscription() })
+
+                const requiresUser = routesData[p].isUser
+                const matches = (val && requiresUser) || (!val && !requiresUser)
+
+                return finish(matches ? p : ``)
+            })
         })
     }
 }

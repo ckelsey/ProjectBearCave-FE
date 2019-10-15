@@ -1,11 +1,9 @@
 import { Component, Vue } from 'vue-property-decorator'
 import constants from '@/services/constants'
-import state from '@/services/state'
+import routes from '@/services/routes/routes'
 
 @Component({})
 export default class BrandElement extends Vue {
-
-    public state = state
 
     public get brandSrc() {
         if (!constants.icon) {
@@ -25,6 +23,6 @@ export default class BrandElement extends Vue {
 
     public goHome(e: any) {
         e.preventDefault()
-        this.state.state = ``
+        routes.route(``)
     }
 }
